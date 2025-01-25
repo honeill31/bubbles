@@ -6,7 +6,6 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
-local circleLifespan = 5 -- Lifespan of a circle in seconds
 local bubbleImage -- To store the bubble image
 
 
@@ -39,7 +38,6 @@ local function spawnCircle(x, y)
         hovered = false,
         dragging = false,
         colliding = false, -- Tracks if the circle is colliding with a rectangle
-        lifespan = circleLifespan, -- Initialize the circle's lifespan
         canPop = love.math.random() < 0.5 -- 50% chance to make the circle "pop-able"
     })
 end
@@ -92,16 +90,16 @@ end
     for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
         local circle = circles[i]
 
-        -- Decrease lifespan
-        circle.lifespan = circle.lifespan - dt
-        if circle.lifespan <= 0 then
-            -- Destroy the circle and remove it if lifespan is zero
+        local circleX, circleY = circle.body:getPosition()
+
+
+        -- Destroy circle if it goes below the bottom of the window
+        -- TODO: Get this value from the conf
+        if (circleY > 600) then 
             circle.body:destroy()
             table.remove(circles, i)
-            goto continue -- Skip the rest of the loop for this circle
+            goto continue
         end
-
-        local circleX, circleY = circle.body:getPosition()
 
         -- Reset collision flag
         circle.colliding = false
