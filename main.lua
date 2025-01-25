@@ -50,8 +50,8 @@ round_control[2] = round_2_colours
 round_control[3] = round_3_colours
 
 -- Timer
-timer = 5.0
-timer_begin = 5.0
+timer = 20.0
+timer_begin = 20.0
 
 W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
