@@ -10,6 +10,9 @@ local spawnTimer = 0 -- Timer for spawning new circles
 local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
 local bubbleImage -- To store the bubble image
+local bubbleBackgroundImage -- background image
+local ballImage -- ball image
+local basketImage -- basket image
 local score = 0 -- To store the score
 
 
@@ -23,8 +26,11 @@ function love.load()
     love.graphics.setColor(255,255,255)
     font = love.graphics.newFont(32)
 
-    -- Load the bubble image
+    -- Load the images
     bubbleImage = love.graphics.newImage("bubble.png")
+    ballImage = love.graphics.newImage("ball.png")
+    basketImage = love.graphics.newImage("basket.png")
+    bubbleBackgroundImage = love.graphics.newImage("noonbackground.png")
 end
 
 
@@ -180,10 +186,23 @@ end
 
 function love.draw()
 
+
+ -- Draw the background image first
+ love.graphics.setColor(1, 1, 1) -- Ensure default color for the image
+ love.graphics.draw(
+     bubbleBackgroundImage,
+     0, 0,                          -- Draw at the top-left corner
+     0,                             -- No rotation
+     love.graphics.getWidth() / bubbleBackgroundImage:getWidth(),  -- Scale X to fit the window
+     love.graphics.getHeight() / bubbleBackgroundImage:getHeight() -- Scale Y to fit the window
+ )
+
+
+
     -- Draw the score in the top left corner
     local score_string = string.format("Score: %d", score)
     love.graphics.setFont(font)
-    love.graphics.print(score_string, 10, 10) 
+    love.graphics.print(score_string, 10, 10)
 
     -- Draw each circle
     for _, circle in ipairs(circles) do
@@ -201,15 +220,16 @@ function love.draw()
                 (circleRadius * 2) / bubbleImage:getHeight() -- Scale Y
             )
         else
-            -- Change color based on collision
-            if circle.colliding then
-                love.graphics.setColor(0, 1, 0) -- Green when colliding
-            else
-                love.graphics.setColor(1, 0, 0) -- Red otherwise
-            end
-
-            -- Draw the circle
-            love.graphics.circle("fill", x, y, circleRadius, 25)
+            -- Draw the ball image for non-pop-able circles
+            love.graphics.setColor(1, 1, 1) -- Reset color for the image
+            love.graphics.draw(
+                ballImage,
+                x - circleRadius,                 -- Align image to the circle's center
+                y - circleRadius,                 -- Align image to the circle's center
+                0,                                -- No rotation
+                (circleRadius * 2) / ballImage:getWidth(),  -- Scale X
+                (circleRadius * 2) / ballImage:getHeight() -- Scale Y
+            )
         end
     end
 
@@ -223,3 +243,4 @@ function love.draw()
     love.graphics.setColor(0, 0, 1)
     love.graphics.rectangle("fill", 1290, 400, 300, 300)
 end
+
