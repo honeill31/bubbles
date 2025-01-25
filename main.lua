@@ -8,11 +8,11 @@ require "colour"
 local world
 local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
-local spawnInterval = 0.3 -- Spawn a circle every second
+local spawnInterval = 1 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
 local basketImage -- basket image
 local score = 0 -- To store the score
-local gravity = 100
+local gravity = 500
 
 W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
@@ -130,7 +130,9 @@ function love.update(dt)
     spawnTimer = spawnTimer + dt
     if spawnTimer >= spawnInterval then
         spawnTimer = 0
-        spawnCircle(love.math.random(left_rectangle.x + circleRadius, W()-left_rectangle.x - circleRadius), -circleRadius) -- Spawn at random X position above the screen
+        local min_val = left_rectangle.width + circleRadius * 2
+        local max_val = W() - right_rectangle.width - circleRadius * 2
+        spawnCircle(love.math.random(min_val, max_val), -circleRadius) -- Spawn at random X position above the screen
     end
 
     -- Check for collisions and bubble-ball interactions
