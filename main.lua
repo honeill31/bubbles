@@ -10,9 +10,8 @@ local world
 local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
-local basketImage -- basket image
 local score = 0 -- To store the score
-local gravity = 500
+local gravity = 300
 
 local current_round = 1
 
@@ -103,10 +102,7 @@ function love.load()
     love.graphics.setBackgroundColor(get_colour(background_colour.red), get_colour(background_colour.green), get_colour(background_colour.blue), get_colour(background_colour.alpha))
     font = love.graphics.newFont(32)
 
-    -- Load the images
-    bubbleImage = love.graphics.newImage("bubble.png")
-    ballImage = love.graphics.newImage("ball.png")
-    basketImage = love.graphics.newImage("basket.png")
+
 
 -- load the sounds
 
@@ -232,8 +228,10 @@ function love.update(dt)
                     if distance <= circleRadius * 2 then
                         -- Play a random pop sound
                         local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
+                        score = score + 20  -- this is not working :( 
                         randomSound:play()
-
+                       
+                
                         -- Mark the pop-able bubble for removal
                         table.insert(toRemove, i)
                         break -- No need to check further; the bubble will pop
@@ -331,6 +329,7 @@ function love.mousepressed(x, y, button, istouch, presses)
                     -- If the circle can pop, remove it
                     circle.body:destroy() -- Destroy the physics body
                     table.remove(circles, i)
+
                     return -- Stop processing further since a circle was popped
                 else
                     -- If not pop-able, start dragging
@@ -362,18 +361,18 @@ end
 function love.draw()
 
     -- Draw the score in the top left corner
-    local score_string = string.format("Score: %d", score)
+    local score_string = string.format("%d", score)
     font = love.graphics.newFont(25)
     love.graphics.setFont(font)
-    love.graphics.print(score_string, left_rectangle.x + 150, 20)
+    love.graphics.print(score_string, left_rectangle.x + 390, 20)
 
     -- Draw the timer 
     local timer_string = string.format("Timer: %.1f", timer)
     love.graphics.print(timer_string, right_rectangle.x - 150, 20)
 
-    -- Draw current round 
-    local round_string = string.format("Current round: %d", current_round)
-    love.graphics.print(round_string, W()/2 - 100, 10)
+    -- -- Draw current round 
+    -- local round_string = string.format("Current round: %d", current_round)
+    -- love.graphics.print(round_string, W()/2 - 100, 10)
 
 
     -- Draw the rectangles using the color values
