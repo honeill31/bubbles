@@ -15,7 +15,8 @@ local ballImage -- ball image
 local basketImage -- basket image
 local score = 0 -- To store the score
 
-local screenwidth, screenHeight, _ = love.window.getMode()
+W = function() return love.graphics.getWidth() end
+H = function() return love.graphics.getHeight() end
 
 
  -- Rectangles
@@ -23,14 +24,14 @@ left_rectangle = {
     x = 0,
     y = 0,
     width = 128,
-    height = screenHeight
+    height = H()
 }
 
 right_rectangle = {
-    x = screenwidth-128,
+    x = W()-128,
     y = 0,
     width = 128,
-    height = screenHeight
+    height = H()
 }
 
 
