@@ -411,11 +411,15 @@ function love.mousereleased(x, y, button, istouch, presses)
                             if (is_same_colour(circle, left_rectangle)) then 
                                 score = score + 2
                                 circle.isScored = true
+                            else 
+                                score = score - 5
                             end
                         elseif in_right_rect(circleX) then 
                             if (is_same_colour(circle, right_rectangle)) then 
                                 score = score + 2
                                 circle.isScored = true
+                            else 
+                                score = score - 5
                             end
                         end
                     end
