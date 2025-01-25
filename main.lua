@@ -28,6 +28,10 @@ local loadingBar = {
 local current_round = 1
 local current_stage = 1
 
+-- current_stage = 1 - main menu
+-- current_stage = 2 - game 
+-- current_stage = 3 - score screen
+
 local font = love.graphics.newFont(50)
 
 local round_2_colours = {
@@ -484,7 +488,5 @@ function love.draw()
     )
     love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
     end
-
-
 end
 
