@@ -1,4 +1,7 @@
 
+-- Includes
+require "score"
+
 -- VARIABLES FOR BUBBLES --
 
 local world
@@ -6,8 +9,8 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
-local circleLifespan = 5 -- Lifespan of a circle in seconds
 local bubbleImage -- To store the bubble image
+local score = 0 -- To store the score
 
 
 -- LOVE LOAD --
@@ -17,6 +20,8 @@ local bubbleImage -- To store the bubble image
 function love.load()
     -- Initialize the physics world
     world = love.physics.newWorld(0, 500, true) -- Gravity of 500 in the Y direction
+    love.graphics.setColor(255,255,255)
+    font = love.graphics.newFont(32)
 
     -- Load the bubble image
     bubbleImage = love.graphics.newImage("bubble.png")
@@ -39,7 +44,6 @@ local function spawnCircle(x, y)
         hovered = false,
         dragging = false,
         colliding = false, -- Tracks if the circle is colliding with a rectangle
-        lifespan = circleLifespan, -- Initialize the circle's lifespan
         canPop = love.math.random() < 0.5 -- 50% chance to make the circle "pop-able"
     })
 end
@@ -92,16 +96,16 @@ end
     for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
         local circle = circles[i]
 
-        -- Decrease lifespan
-        circle.lifespan = circle.lifespan - dt
-        if circle.lifespan <= 0 then
-            -- Destroy the circle and remove it if lifespan is zero
+        local circleX, circleY = circle.body:getPosition()
+
+
+        -- Destroy circle if it goes below the bottom of the window
+        -- TODO: Get this value from the confv
+        if (circleY > 600) then 
             circle.body:destroy()
             table.remove(circles, i)
-            goto continue -- Skip the rest of the loop for this circle
+            goto continue
         end
-
-        local circleX, circleY = circle.body:getPosition()
 
         -- Reset collision flag
         circle.colliding = false
@@ -175,6 +179,12 @@ end
 -- GRAPHICS SETTINGS 
 
 function love.draw()
+
+    -- Draw the score in the top left corner
+    local score_string = string.format("Score: %d", score)
+    love.graphics.setFont(font)
+    love.graphics.print(score_string, 10, 10) 
+
     -- Draw each circle
     for _, circle in ipairs(circles) do
         local x, y = circle.body:getPosition()
