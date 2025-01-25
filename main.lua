@@ -17,6 +17,10 @@ local gravity = 100
 W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
 
+function get_colour(a_colour)
+    return a_colour/255
+end
+
 
  -- Rectangles
 left_rectangle = {
@@ -266,40 +270,37 @@ end
 
 function love.draw()
 
+-- Draw the score in the top left corner
+local score_string = string.format("Score: %d", score)
+love.graphics.setFont(font)
+love.graphics.print(score_string, 10, 10)
 
- -- Draw the background image first
- love.graphics.setColor(1, 1, 1) -- Ensure default color for the image
+
+-- Draw the rectangles using the color values
+love.graphics.setColor(31/355, 168/255, 153/255, left_rectangle_colour.alpha)
+love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
+love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
+love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
 
 
-    -- Draw the score in the top left corner
-    local score_string = string.format("Score: %d", score)
-    love.graphics.setFont(font)
-    love.graphics.print(score_string, 10, 10)
+-- Draw each circle
+for _, circle in ipairs(circles) do
+    local x, y = circle.body:getPosition()
 
-    -- Draw each circle
-    for _, circle in ipairs(circles) do
-        local x, y = circle.body:getPosition()
-
-        if circle.canPop then
-            -- Draw the bubble image for pop-able circles
-            love.graphics.setColor(ball_1.red, ball_1.green, ball_1.blue, ball_1.alpha)
-            love.graphics.circle("fill", x, y, circleRadius)
-        else
-            -- Draw the ball image for non-pop-able circles
-            left_or_right = love.math.random() < 0.5
-            if (left_or_right) then 
-                love.graphics.setColor(left_rectangle_colour.red, left_rectangle_colour.green, left_rectangle_colour.blue, left_rectangle_colour.alpha)
-            else 
-                love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
-            end
-            love.graphics.circle("fill", x, y, circleRadius)
+    if circle.canPop then
+        -- Draw the bubble image for pop-able circles
+        love.graphics.setColor(ball_1.red, ball_1.green, ball_1.blue, ball_1.alpha)
+        love.graphics.circle("fill", x, y, circleRadius)
+    else
+        -- Draw the ball image for non-pop-able circles
+        left_or_right = love.math.random() < 0.5
+        if (left_or_right) then 
+            love.graphics.setColor(get_colour(left_rectangle_colour.red), get_colour(left_rectangle_colour.green), get_colour(left_rectangle_colour.blue), get_colour(left_rectangle_colour.alpha))
+        else 
+            love.graphics.setColor(get_colour(right_rectangle_colour.red), get_colour(right_rectangle_colour.green), get_colour(right_rectangle_colour.blue), get_colour(right_rectangle_colour.alpha))
         end
+        love.graphics.circle("fill", x, y, circleRadius)
     end
-
-    -- Draw the rectangles using the color values
-    love.graphics.setColor(left_rectangle_colour.red, left_rectangle_colour.green, left_rectangle_colour.blue, left_rectangle_colour.alpha)
-    love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
-    love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
-    love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
+end
 end
 
