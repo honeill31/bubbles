@@ -168,7 +168,8 @@ local function spawnCircle(x, y)
         hovered = false,
         dragging = false,
         colliding = false, -- Tracks if the circle is colliding with a rectangle
-        canPop = can_pop
+        canPop = can_pop,
+        isScored = false
     })
 end
 
@@ -230,15 +231,6 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
             -- Destroy circle if it goes below the bottom of the window
             _, height, _ = love.window.getMode()
             if (circleY > height) then
-                if in_left_rect(circleX) then 
-                    if (is_same_colour(circle, left_rectangle)) then 
-                        score = add_score(score, 2)
-                    end
-                elseif in_right_rect(circleX) then 
-                    if (is_same_colour(circle, right_rectangle)) then 
-                        score = add_score(score, 2)
-                    end
-                end
                 table.insert(toRemove, i)
                 goto continue
             end
@@ -388,6 +380,20 @@ function love.mousereleased(x, y, button, istouch, presses)
                 if circle.dragging then
                     circle.dragging = false
                     circle.body:setType("dynamic") -- Re-enable physics
+                    local circleX, _ = circle.body:getPosition()
+                    if circle.isScored == false then
+                        if in_left_rect(circleX) then 
+                            if (is_same_colour(circle, left_rectangle)) then 
+                                score = score + 2
+                                circle.isScored = true
+                            end
+                        elseif in_right_rect(circleX) then 
+                            if (is_same_colour(circle, right_rectangle)) then 
+                                score = score + 2
+                                circle.isScored = true
+                            end
+                        end
+                    end
                 end
             end
         end
