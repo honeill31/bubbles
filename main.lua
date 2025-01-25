@@ -353,7 +353,7 @@ end
 
 
 function love.mousereleased(x, y, button, istouch, presses)
-    if (current_stage == 1) then 
+    if (current_stage == 2) then 
         if button == 1 then
             for _, circle in ipairs(circles) do
                 if circle.dragging then
