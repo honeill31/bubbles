@@ -18,7 +18,12 @@ W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
 
 function get_colour(a_colour)
-    return a_colour/255
+    result = 0
+    if a_colour == 0 then
+        return result
+    else
+        return a_colour/255
+    end
 end
 
 
@@ -78,11 +83,20 @@ local function spawnCircle(x, y)
     local fixture = love.physics.newFixture(body, shape)
     fixture:setRestitution(0.8) -- Make the circle bouncy
 
+    right = love.math.random() < 0.5
+    local colour = right_rectangle_colour
+    if (right) then 
+        colour = left_rectangle_colour
+    else
+        colour = right_rectangle_colour
+    end
+
     -- Add the new circle to the circles table
     table.insert(circles, {
         body = body,
         shape = shape,
         fixture = fixture,
+        colour = colour,
         hovered = false,
         dragging = false,
         colliding = false, -- Tracks if the circle is colliding with a rectangle
@@ -277,9 +291,9 @@ love.graphics.print(score_string, 10, 10)
 
 
 -- Draw the rectangles using the color values
-love.graphics.setColor(31/355, 168/255, 153/255, left_rectangle_colour.alpha)
+love.graphics.setColor(get_colour(left_rectangle_colour.red), get_colour(left_rectangle_colour.green), get_colour(left_rectangle_colour.blue), get_colour(left_rectangle_colour.alpha))
 love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
-love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
+love.graphics.setColor(get_colour(right_rectangle_colour.red), get_colour(right_rectangle_colour.green), get_colour(right_rectangle_colour.blue), get_colour(right_rectangle_colour.alpha))
 love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
 
 
@@ -289,16 +303,11 @@ for _, circle in ipairs(circles) do
 
     if circle.canPop then
         -- Draw the bubble image for pop-able circles
-        love.graphics.setColor(ball_1.red, ball_1.green, ball_1.blue, ball_1.alpha)
+        love.graphics.setColor(get_colour(ball_1.red), get_colour(ball_1.green), get_colour(ball_1.blue), get_colour(ball_1.alpha))
         love.graphics.circle("fill", x, y, circleRadius)
     else
         -- Draw the ball image for non-pop-able circles
-        left_or_right = love.math.random() < 0.5
-        if (left_or_right) then 
-            love.graphics.setColor(get_colour(left_rectangle_colour.red), get_colour(left_rectangle_colour.green), get_colour(left_rectangle_colour.blue), get_colour(left_rectangle_colour.alpha))
-        else 
-            love.graphics.setColor(get_colour(right_rectangle_colour.red), get_colour(right_rectangle_colour.green), get_colour(right_rectangle_colour.blue), get_colour(right_rectangle_colour.alpha))
-        end
+        love.graphics.setColor(get_colour(circle.colour.red), get_colour(circle.colour.green), get_colour(circle.colour.blue), get_colour(circle.colour.alpha))
         love.graphics.circle("fill", x, y, circleRadius)
     end
 end
