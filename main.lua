@@ -20,7 +20,7 @@ local screenwidth, screenHeight, _ = love.window.getMode()
 
  -- Rectangles
 left_rectangle = {
-    x = 0,
+    x = screenwidth/2,
     y = screenHeight-64,
     width = 128,
     height = 64
