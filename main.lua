@@ -11,7 +11,7 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
-local gravity = 300
+local gravity = 150
 
 
 local loadingBar = {
