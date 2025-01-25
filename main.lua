@@ -10,9 +10,8 @@ local world
 local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
-local basketImage -- basket image
 local score = 0 -- To store the score
-local gravity = 500
+local gravity = 300
 
 local current_round = 1
 local current_stage = 1
@@ -102,10 +101,7 @@ function love.load()
 
     love.graphics.setFont(font)
 
-    -- Load the images
-    bubbleImage = love.graphics.newImage("bubble.png")
-    ballImage = love.graphics.newImage("ball.png")
-    basketImage = love.graphics.newImage("basket.png")
+
 
 -- load the sounds
 
@@ -217,28 +213,29 @@ function love.update(dt)
                 table.insert(toRemove, i)
                 goto continue
             end
-    
-            -- Check for collisions between pop-able bubbles and held balls
-            if circle.canPop then -- Only for pop-able bubbles
-                for _, otherCircle in ipairs(circles) do
-                    if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
-                        local otherX, otherY = otherCircle.body:getPosition()
-    
-                        -- Calculate the distance between the bubble and the held ball
-                        local dx = circleX - otherX
-                        local dy = circleY - otherY
-                        local distance = math.sqrt(dx * dx + dy * dy)
-    
-                        -- If the distance is less than the sum of their radii, pop the bubble
-                        if distance <= circleRadius * 2 then
-                            -- Play a random pop sound
-                            local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
-                            randomSound:play()
-    
-                            -- Mark the pop-able bubble for removal
-                            table.insert(toRemove, i)
-                            break -- No need to check further; the bubble will pop
-                        end
+
+        -- Check for collisions between pop-able bubbles and held balls
+        if circle.canPop then -- Only for pop-able bubbles
+            for _, otherCircle in ipairs(circles) do
+                if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
+                    local otherX, otherY = otherCircle.body:getPosition()
+
+                    -- Calculate the distance between the bubble and the held ball
+                    local dx = circleX - otherX
+                    local dy = circleY - otherY
+                    local distance = math.sqrt(dx * dx + dy * dy)
+
+                    -- If the distance is less than the sum of their radii, pop the bubble
+                    if distance <= circleRadius * 2 then
+                        -- Play a random pop sound
+                        local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
+                        score = score + 20  -- this is not working :( 
+                        randomSound:play()
+                       
+                
+                        -- Mark the pop-able bubble for removal
+                        table.insert(toRemove, i)
+                        break -- No need to check further; the bubble will pop
                     end
                 end
             end
@@ -296,7 +293,7 @@ function love.update(dt)
                 circle.colliding = true -- Mark circle as colliding
             end
     
-    
+        end
     
     -- COLLISIONS END
     
@@ -391,16 +388,10 @@ function love.draw()
 
     if (current_stage == 2) then 
         -- Draw the score in the top left corner
-        local score_string = string.format("Score: %d", score)
-        love.graphics.print(score_string, left_rectangle.x + 150, 20)
-
-        -- Draw the timer 
-        local timer_string = string.format("Timer: %.1f", timer)
-        love.graphics.print(timer_string, right_rectangle.x - 150, 20)
-
-        -- Draw current round 
-        local round_string = string.format("Current round: %d", current_round)
-        love.graphics.print(round_string, W()/2 - 100, 10)
+        local score_string = string.format("%d", score)
+        font = love.graphics.newFont(25)
+        love.graphics.setFont(font)
+        love.graphics.print(score_string, left_rectangle.x + 390, 20)
 
 
         -- Draw the rectangles using the color values
