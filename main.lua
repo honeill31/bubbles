@@ -275,8 +275,10 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
     
         -- Remove all marked circles
         for _, i in ipairs(toRemove) do
-            circles[i].body:destroy()
-            table.remove(circles, i)
+            if (circles[i] ~= nil) then
+                circles[i].body:destroy()
+                table.remove(circles, i)
+            end
         end
     
     -- COLLISIONS --
