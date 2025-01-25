@@ -54,16 +54,13 @@ local right_colour = right_rectangle_colour
 function love.load()
     -- Initialize the physics world
     world = love.physics.newWorld(0, gravity, true) -- Gravity of 500 in the Y direction
-    love.graphics.setColor(255,255,255)
+    love.graphics.setBackgroundColor(get_colour(background_colour.red), get_colour(background_colour.green), get_colour(background_colour.blue), get_colour(background_colour.alpha))
     font = love.graphics.newFont(32)
 
     -- Load the images
     bubbleImage = love.graphics.newImage("bubble.png")
     ballImage = love.graphics.newImage("ball.png")
     basketImage = love.graphics.newImage("basket.png")
-    
-
-
 
 -- load the sounds
 
