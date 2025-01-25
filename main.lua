@@ -2,6 +2,7 @@
 -- Includes
 require "score"
 require "colour"
+require "timer"
 
 -- VARIABLES FOR BUBBLES --
 
@@ -13,6 +14,9 @@ local circleRadius = 50 -- Size of the circle
 local basketImage -- basket image
 local score = 0 -- To store the score
 local gravity = 500
+
+-- Timer
+timer = 20.0
 
 W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
@@ -125,6 +129,7 @@ end
 function love.update(dt)
     -- Update the physics world
     world:update(dt)
+    timer = timer - dt
 
     -- Handle spawning new circles
     spawnTimer = spawnTimer + dt
@@ -301,10 +306,14 @@ end
 function love.draw()
 
     -- Draw the score in the top left corner
-    local score_string = string.format("score: %d", score)
+    local score_string = string.format("Score: %d", score)
     font = love.graphics.newFont(25)
     love.graphics.setFont(font)
-    love.graphics.print(score_string, W()/2-50, 10)
+    love.graphics.print(score_string, left_rectangle.x + 150, 10)
+
+    -- Draw the timer 
+    local timer_string = string.format("Timer: %.1f", timer)
+    love.graphics.print(timer_string, right_rectangle.x - 150, 10)
 
 
     -- Draw the rectangles using the color values
