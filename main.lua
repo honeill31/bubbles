@@ -15,6 +15,36 @@ local basketImage -- basket image
 local score = 0 -- To store the score
 local gravity = 500
 
+local current_round = 1
+
+local round_2_colours = {
+    left_rect = s2_left_rectangle_colour,
+    right_rect = s2_right_rectangle_colour,
+    b_1 = s2_ball_1,
+    b_2 = s2_ball_2,
+    b_3 = s2_ball_3
+}
+local round_3_colours = {
+    left_rect = s3_left_rectangle_colour,
+    right_rect = s3_right_rectangle_colour,
+    b_1 = s3_ball_1,
+    b_2 = s3_ball_2,
+    b_3 = s3_ball_3
+}
+
+local round_1_colours = {
+    left_rect = left_rectangle_colour,
+    right_rect = right_rectangle_colour,
+    b_1 = ball_1,
+    b_2 = ball_2,
+    b_3 = ball_3
+}
+
+local round_control = {}
+round_control[1] = round_1_colours
+round_control[2] = round_2_colours
+round_control[3] = round_3_colours
+
 -- Timer
 timer = 20.0
 
@@ -49,6 +79,9 @@ right_rectangle = {
 -- Track the active colours for the left and right rectangles
 local left_colour = left_rectangle_colour
 local right_colour = right_rectangle_colour
+local ball_1_colour = ball_1
+local ball_2_colour = ball_2 
+local ball_3_colour = ball_3
 
 
 -- LOVE LOAD --
@@ -90,20 +123,20 @@ local function spawnCircle(x, y)
     if (can_pop) then
         local col = love.math.random()
         if (col < 0.33) then
-            bubble_colour = ball_1
+            bubble_colour = round_control[current_round].b_1
         elseif (col > 0.33 and col < 0.66) then
-            bubble_colour = ball_2
+            bubble_colour = round_control[current_round].b_2
         elseif (col > 0.66) then
-            bubble_colour = ball_3
+            bubble_colour = round_control[current_round].b_3
         end 
     end
 
     if (can_pop == false) then 
         local right = love.math.random() < 0.5
         if (right) then 
-            bubble_colour = left_rectangle_colour
+            bubble_colour = round_control[current_round].left_rect
         else
-            bubble_colour = right_rectangle_colour
+            bubble_colour = round_control[current_round].right_rect
         end
     end
 
@@ -122,14 +155,22 @@ local function spawnCircle(x, y)
     })
 end
 
-
-
 -- LOVE UPDATE --
 
 function love.update(dt)
     -- Update the physics world
     world:update(dt)
     timer = timer - dt
+
+    if (is_round_over(timer)) then 
+        current_round = current_round + 1
+        if (current_round > 3) then 
+            -- reset the round, todo let's make an end screen or something with your score
+            current_round = 1
+            --love.event.quit()
+        end
+        timer = reset_timer(timer)
+    end
 
     -- Handle spawning new circles
     spawnTimer = spawnTimer + dt
@@ -309,17 +350,21 @@ function love.draw()
     local score_string = string.format("Score: %d", score)
     font = love.graphics.newFont(25)
     love.graphics.setFont(font)
-    love.graphics.print(score_string, left_rectangle.x + 150, 10)
+    love.graphics.print(score_string, left_rectangle.x + 150, 20)
 
     -- Draw the timer 
     local timer_string = string.format("Timer: %.1f", timer)
-    love.graphics.print(timer_string, right_rectangle.x - 150, 10)
+    love.graphics.print(timer_string, right_rectangle.x - 150, 20)
+
+    -- Draw current round 
+    local round_string = string.format("Current round: %d", current_round)
+    love.graphics.print(round_string, W()/2 - 100, 10)
 
 
     -- Draw the rectangles using the color values
-    love.graphics.setColor(get_colour(left_rectangle_colour.red), get_colour(left_rectangle_colour.green), get_colour(left_rectangle_colour.blue), get_colour(left_rectangle_colour.alpha))
+    love.graphics.setColor(get_colour(round_control[current_round].left_rect.red), get_colour(round_control[current_round].left_rect.green), get_colour(round_control[current_round].left_rect.blue), get_colour(round_control[current_round].left_rect.alpha))
     love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
-    love.graphics.setColor(get_colour(right_rectangle_colour.red), get_colour(right_rectangle_colour.green), get_colour(right_rectangle_colour.blue), get_colour(right_rectangle_colour.alpha))
+    love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
     love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
 
 
