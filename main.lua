@@ -1,4 +1,7 @@
 
+-- Includes
+require "score"
+
 -- VARIABLES FOR BUBBLES --
 
 local world
@@ -7,6 +10,7 @@ local spawnTimer = 0 -- Timer for spawning new circles
 local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
 local bubbleImage -- To store the bubble image
+local score = 0 -- To store the score
 
 
 -- LOVE LOAD --
@@ -16,6 +20,8 @@ local bubbleImage -- To store the bubble image
 function love.load()
     -- Initialize the physics world
     world = love.physics.newWorld(0, 500, true) -- Gravity of 500 in the Y direction
+    love.graphics.setColor(255,255,255)
+    font = love.graphics.newFont(32)
 
     -- Load the bubble image
     bubbleImage = love.graphics.newImage("bubble.png")
@@ -94,7 +100,7 @@ end
 
 
         -- Destroy circle if it goes below the bottom of the window
-        -- TODO: Get this value from the conf
+        -- TODO: Get this value from the confv
         if (circleY > 600) then 
             circle.body:destroy()
             table.remove(circles, i)
@@ -173,6 +179,12 @@ end
 -- GRAPHICS SETTINGS 
 
 function love.draw()
+
+    -- Draw the score in the top left corner
+    local score_string = string.format("Score: %d", score)
+    love.graphics.setFont(font)
+    love.graphics.print(score_string, 10, 10) 
+
     -- Draw each circle
     for _, circle in ipairs(circles) do
         local x, y = circle.body:getPosition()
