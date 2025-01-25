@@ -11,7 +11,7 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
-local gravity = 150
+
 
 
 local loadingBar = {
@@ -34,6 +34,18 @@ local current_stage = 1
 
 local font = love.graphics.newFont(50)
 
+
+local round_3_colours = {
+    left_rect = s3_left_rectangle_colour,
+    right_rect = s3_right_rectangle_colour,
+    b_1 = s3_ball_1,
+    b_2 = s3_ball_2,
+    b_3 = s3_ball_3,
+    spawn = 0.4,
+    gravity = 100
+}
+
+
 local round_2_colours = {
     left_rect = s2_left_rectangle_colour,
     right_rect = s2_right_rectangle_colour,
@@ -41,16 +53,7 @@ local round_2_colours = {
     b_2 = s2_ball_2,
     b_3 = s2_ball_3,
     spawn = 0.5,
-    gravity = 100
-}
-local round_3_colours = {
-    left_rect = s3_left_rectangle_colour,
-    right_rect = s3_right_rectangle_colour,
-    b_1 = s3_ball_1,
-    b_2 = s3_ball_2,
-    b_3 = s3_ball_3,
-    spawn = 0.3,
-    gravity = 200
+    gravity = 70
 }
 
 local round_1_colours = {
@@ -59,8 +62,8 @@ local round_1_colours = {
     b_1 = ball_1,
     b_2 = ball_2,
     b_3 = ball_3,
-    spawn = 1,
-    gravity = 300
+    spawn = 0.7,
+    gravity = 50
 }
 
 local round_control = {}
