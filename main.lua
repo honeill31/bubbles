@@ -36,7 +36,8 @@ local round_2_colours = {
     b_1 = s2_ball_1,
     b_2 = s2_ball_2,
     b_3 = s2_ball_3,
-    spawn = 0.5
+    spawn = 0.5,
+    gravity = 100
 }
 local round_3_colours = {
     left_rect = s3_left_rectangle_colour,
@@ -44,7 +45,8 @@ local round_3_colours = {
     b_1 = s3_ball_1,
     b_2 = s3_ball_2,
     b_3 = s3_ball_3,
-    spawn = 0.3
+    spawn = 0.3,
+    gravity = 200
 }
 
 local round_1_colours = {
@@ -53,7 +55,8 @@ local round_1_colours = {
     b_1 = ball_1,
     b_2 = ball_2,
     b_3 = ball_3,
-    spawn = 1
+    spawn = 1,
+    gravity = 300
 }
 
 local round_control = {}
@@ -102,6 +105,8 @@ local ball_1_colour = ball_1
 local ball_2_colour = ball_2 
 local ball_3_colour = ball_3
 
+local world
+
 
 -- LOVE LOAD --
 
@@ -109,7 +114,7 @@ local ball_3_colour = ball_3
 
 function love.load()
     -- Initialize the physics world
-    world = love.physics.newWorld(0, gravity, true) -- Gravity of 500 in the Y direction
+    world = love.physics.newWorld(0, round_control[current_round].gravity, true) -- Gravity of 500 in the Y direction
     love.graphics.setBackgroundColor(get_colour(background_colour.red), get_colour(background_colour.green), get_colour(background_colour.blue), get_colour(background_colour.alpha))
 
     love.graphics.setFont(font)
@@ -193,12 +198,13 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
     timer = timer - dt
 
     -- Update the left/right rectangle colours
-    local rect_idx = current_round
-    if (rect_idx > 3) then 
-        rect_idx = 3
+    local rnd_idx = current_round
+    if (rnd_idx > 3) then 
+        rnd_idx = 3
     end 
-    left_rectangle.colour = round_control[rect_idx].left_rect
-    right_rectangle.colour = round_control[rect_idx].right_rect
+    left_rectangle.colour = round_control[rnd_idx].left_rect
+    right_rectangle.colour = round_control[rnd_idx].right_rect
+    world:setGravity(0, round_control[rnd_idx].gravity)
 
     if (current_stage == 2) then 
 
