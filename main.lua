@@ -16,6 +16,11 @@ local gravity = 500
 
 local current_round = 1
 
+local stages = 
+{
+    
+}
+
 local round_2_colours = {
     left_rect = s2_left_rectangle_colour,
     right_rect = s2_right_rectangle_colour,
@@ -164,12 +169,6 @@ end
 function love.update(dt)
     -- Update the physics world
     world:update(dt)
-
--- Update the left/right rectangle colours
-    left_rectangle.colour = round_control[current_round].left_rect
-    right_rectangle.colour = round_control[current_round].right_rect
-
-
     timer = timer - dt
 
     if (is_round_over(timer)) then 
@@ -181,6 +180,10 @@ function love.update(dt)
         end
         timer = reset_timer(timer)
     end
+
+    -- Update the left/right rectangle colours
+    left_rectangle.colour = round_control[current_round].left_rect
+    right_rectangle.colour = round_control[current_round].right_rect
 
     -- Handle spawning new circles
     spawnTimer = spawnTimer + dt
@@ -275,10 +278,6 @@ function love.update(dt)
         -- Destroy circle if it goes below the bottom of the window
         _, height, _ = love.window.getMode()
         if (circleY > height) then 
-            --We need to also check the score
-            if can_increase_score(circleX) then 
-                score = increase_score(score)
-            end
             circle.body:destroy()
             table.remove(circles, i)
             goto continue
