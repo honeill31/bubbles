@@ -229,7 +229,6 @@ function love.update(dt)
                     if distance <= circleRadius * 2 then
                         -- Play a random pop sound
                         local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
-                        score = score + 20  -- this is not working :( 
                         randomSound:play()
                        
                 
@@ -337,6 +336,7 @@ function love.mousepressed(x, y, button, istouch, presses)
     
                         -- If the circle can pop, remove it
                         circle.body:destroy() -- Destroy the physics body
+                        score = score + 1
                         table.remove(circles, i)
                         return -- Stop processing further since a circle was popped
                     else
