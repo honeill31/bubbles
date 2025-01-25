@@ -10,11 +10,10 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
-local bubbleImage -- To store the bubble image
 local bubbleBackgroundImage -- background image
-local ballImage -- ball image
 local basketImage -- basket image
 local score = 0 -- To store the score
+local gravity = 100
 
 W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
@@ -46,7 +45,7 @@ local right_colour = right_rectangle_colour
 
 function love.load()
     -- Initialize the physics world
-    world = love.physics.newWorld(0, 500, true) -- Gravity of 500 in the Y direction
+    world = love.physics.newWorld(0, gravity, true) -- Gravity of 500 in the Y direction
     love.graphics.setColor(255,255,255)
     font = love.graphics.newFont(32)
 
@@ -99,7 +98,7 @@ function love.update(dt)
     spawnTimer = spawnTimer + dt
     if spawnTimer >= spawnInterval then
         spawnTimer = 0
-        spawnCircle(love.math.random(500, 1000), -circleRadius) -- Spawn at random X position above the screen
+        spawnCircle(love.math.random(left_rectangle.x + circleRadius, W()-left_rectangle.x - circleRadius), -circleRadius) -- Spawn at random X position above the screen
     end
 
     -- Check for collisions and bubble-ball interactions
@@ -152,13 +151,6 @@ function love.update(dt)
         circles[i].body:destroy()
         table.remove(circles, i)
     end
-
-
-
-
-
-
-
 
 -- COLLISIONS --
 -- collisions for the rectangles -- 
@@ -285,8 +277,6 @@ function love.draw()
      love.graphics.getHeight() / bubbleBackgroundImage:getHeight() -- Scale Y to fit the window
  )
 
-
-
     -- Draw the score in the top left corner
     local score_string = string.format("Score: %d", score)
     love.graphics.setFont(font)
@@ -299,7 +289,7 @@ function love.draw()
         if circle.canPop then
             -- Draw the bubble image for pop-able circles
             love.graphics.setColor(ball_1.red, ball_1.green, ball_1.blue, ball_1.alpha)
-            love.graphics.circle("fill", x-circleRadius, y-circleRadius, circleRadius)
+            love.graphics.circle("fill", x, y, circleRadius)
         else
             -- Draw the ball image for non-pop-able circles
             left_or_right = love.math.random() < 0.5
@@ -308,8 +298,7 @@ function love.draw()
             else 
                 love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
             end
-            
-            love.graphics.circle("fill", x-circleRadius, y-circleRadius, circleRadius)
+            love.graphics.circle("fill", x, y, circleRadius)
         end
     end
 

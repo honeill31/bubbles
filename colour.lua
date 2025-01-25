@@ -28,7 +28,7 @@ background_colour = {
 
 ball_1 = {
     red = 0,
-    green = 255,
+    green = 100,
     blue = 0,
     alpha = 1
 }
