@@ -1,6 +1,7 @@
 
 -- Includes
 require "score"
+require "colour"
 
 -- VARIABLES FOR BUBBLES --
 
@@ -316,7 +317,10 @@ function love.draw()
         end
     end
 
+    -- Draw the rectangles using the color values
+    love.graphics.setColor(left_rectangle_colour.red, left_rectangle_colour.green, left_rectangle_colour.blue, left_rectangle_colour.alpha)
     love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
+    love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
     love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
     --love.graphics.print(tostring(basketImage:getWidth()))
     -- love.graphics.setColor(1, 1, 1) -- Reset color for the image
