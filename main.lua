@@ -203,9 +203,6 @@ function love.update(dt)
 -- Update the physics world
 world:update(dt)
 
--- Decrement the timer
-timer = math.max(0, timer - dt)
-
 -- Calculate the current width of the loading bar
 local timeLeftPercent = timer / timer_begin
 loadingBar.currentWidth = loadingBar.width * timeLeftPercent
@@ -213,7 +210,6 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
 
     -- Update the physics world
     world:update(dt)
-    timer = timer - dt
 
     -- Update the left/right rectangle colours
     local rnd_idx = current_round
@@ -225,7 +221,7 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
     world:setGravity(0, round_control[rnd_idx].gravity)
 
     if (current_stage == 2) then 
-
+        timer = timer - dt
         if (is_round_over(timer)) then 
             current_round = current_round + 1
             if (current_round > 3) then 
