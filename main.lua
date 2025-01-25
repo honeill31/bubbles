@@ -12,6 +12,20 @@ local circleRadius = 50 -- Size of the circle
 local bubbleImage -- To store the bubble image
 local score = 0 -- To store the score
 
+ -- Rectangles
+
+-- Left rectangle dimensions
+local leftRectX = 10
+local leftRectY = 400
+local leftRectWidth = 300
+local leftRectHeight = 300
+
+-- Right rectangle dimensions
+local rightRectX = 1290
+local rightRectY = 400
+local rightRectWidth = 300
+local rightRectHeight = 300
+
 
 -- LOVE LOAD --
 
@@ -64,19 +78,7 @@ function love.update(dt)
 end
 
 -- COLLISIONS --
-
 -- collisions for the rectangles -- 
-    -- Left rectangle dimensions
-    local leftRectX = 10
-    local leftRectY = 400
-    local leftRectWidth = 300
-    local leftRectHeight = 300
-
-    -- Right rectangle dimensions
-    local rightRectX = 1290
-    local rightRectY = 400
-    local rightRectWidth = 300
-    local rightRectHeight = 300
 
     -- Collision detection function
     local function checkCircleRectCollision(circleX, circleY, circleRadius, rectX, rectY, rectWidth, rectHeight)
