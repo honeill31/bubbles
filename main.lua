@@ -301,9 +301,10 @@ end
 function love.draw()
 
     -- Draw the score in the top left corner
-    local score_string = string.format("Score: %d", score)
+    local score_string = string.format("score: %d", score)
+    font = love.graphics.newFont(25)
     love.graphics.setFont(font)
-    love.graphics.print(score_string, 10, 10)
+    love.graphics.print(score_string, W()/2-50, 10)
 
 
     -- Draw the rectangles using the color values
