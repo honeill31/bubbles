@@ -35,6 +35,10 @@ right_rectangle = {
     height = H()
 }
 
+-- Track the active colours for the left and right rectangles
+local left_colour = left_rectangle_colour
+local right_colour = right_rectangle_colour
+
 
 -- LOVE LOAD --
 
@@ -294,26 +298,18 @@ function love.draw()
 
         if circle.canPop then
             -- Draw the bubble image for pop-able circles
-            love.graphics.setColor(1, 1, 1) -- Reset color for the image
-            love.graphics.draw(
-                bubbleImage,
-                x - circleRadius,                 -- Align image to the circle's center
-                y - circleRadius,                 -- Align image to the circle's center
-                0,                                -- No rotation
-                (circleRadius * 2) / bubbleImage:getWidth(),  -- Scale X
-                (circleRadius * 2) / bubbleImage:getHeight() -- Scale Y
-            )
+            love.graphics.setColor(ball_1.red, ball_1.green, ball_1.blue, ball_1.alpha)
+            love.graphics.circle("fill", x-circleRadius, y-circleRadius, circleRadius)
         else
             -- Draw the ball image for non-pop-able circles
-            love.graphics.setColor(1, 1, 1) -- Reset color for the image
-            love.graphics.draw(
-                ballImage,
-                x - circleRadius,                 -- Align image to the circle's center
-                y - circleRadius,                 -- Align image to the circle's center
-                0,                                -- No rotation
-                (circleRadius * 2) / ballImage:getWidth(),  -- Scale X
-                (circleRadius * 2) / ballImage:getHeight() -- Scale Y
-            )
+            left_or_right = love.math.random() < 0.5
+            if (left_or_right) then 
+                love.graphics.setColor(left_rectangle_colour.red, left_rectangle_colour.green, left_rectangle_colour.blue, left_rectangle_colour.alpha)
+            else 
+                love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
+            end
+            
+            love.graphics.circle("fill", x-circleRadius, y-circleRadius, circleRadius)
         end
     end
 
@@ -322,25 +318,5 @@ function love.draw()
     love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
     love.graphics.setColor(right_rectangle_colour.red, right_rectangle_colour.green, right_rectangle_colour.blue, right_rectangle_colour.alpha)
     love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
-    --love.graphics.print(tostring(basketImage:getWidth()))
-    -- love.graphics.setColor(1, 1, 1) -- Reset color for the image
-    -- love.graphics.draw(
-    --     basketImage, 
-    --     left_rectangle.x, 
-    --     left_rectangle.y, 
-    --     0, 
-    --     left_rectangle.width,
-    --     left_rectangle.height
-    -- )
-
-    -- love.graphics.setColor(1, 1, 1) -- Reset color for the image
-    -- love.graphics.draw(
-    --     basketImage, 
-    --     right_rectangle.x, 
-    --     right_rectangle.y, 
-    --     0, 
-    --     basketImage:getWidth()/20,
-    --     basketImage:getHeight()/20
-    -- )
 end
 
