@@ -15,6 +15,9 @@ local ballImage -- ball image
 local basketImage -- basket image
 local score = 0 -- To store the score
 
+
+
+
  -- Rectangles
 left_rectangle = {
     x = 10,
@@ -46,6 +49,15 @@ function love.load()
     ballImage = love.graphics.newImage("ball.png")
     basketImage = love.graphics.newImage("basket.png")
     bubbleBackgroundImage = love.graphics.newImage("noonbackground.png")
+
+
+-- load the sounds
+
+    bubblePopSounds = {}
+    for i = 1, 10 do
+        bubblePopSounds[i] = love.audio.newSource(string.format("sounds/pop%d.wav", i), "static")
+    end
+
 end
 
 
@@ -161,6 +173,10 @@ function love.mousepressed(x, y, button, istouch, presses)
 
             if isHovered then
                 if circle.canPop then
+                    -- Play a random pop sound
+                    local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
+                    randomSound:play()
+
                     -- If the circle can pop, remove it
                     circle.body:destroy() -- Destroy the physics body
                     table.remove(circles, i)
@@ -175,6 +191,7 @@ function love.mousepressed(x, y, button, istouch, presses)
         end
     end
 end
+
 
 function love.mousereleased(x, y, button, istouch, presses)
     if button == 1 then
