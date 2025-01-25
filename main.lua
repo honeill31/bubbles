@@ -10,7 +10,6 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
-local bubbleBackgroundImage -- background image
 local basketImage -- basket image
 local score = 0 -- To store the score
 local gravity = 100
@@ -53,7 +52,8 @@ function love.load()
     bubbleImage = love.graphics.newImage("bubble.png")
     ballImage = love.graphics.newImage("ball.png")
     basketImage = love.graphics.newImage("basket.png")
-    bubbleBackgroundImage = love.graphics.newImage("noonbackground.png")
+    
+
 
 
 -- load the sounds
@@ -269,13 +269,7 @@ function love.draw()
 
  -- Draw the background image first
  love.graphics.setColor(1, 1, 1) -- Ensure default color for the image
- love.graphics.draw(
-     bubbleBackgroundImage,
-     0, 0,                          -- Draw at the top-left corner
-     0,                             -- No rotation
-     love.graphics.getWidth() / bubbleBackgroundImage:getWidth(),  -- Scale X to fit the window
-     love.graphics.getHeight() / bubbleBackgroundImage:getHeight() -- Scale Y to fit the window
- )
+
 
     -- Draw the score in the top left corner
     local score_string = string.format("Score: %d", score)
