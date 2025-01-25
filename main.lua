@@ -168,14 +168,18 @@ function love.update(dt)
     timer = timer - dt
 
     -- Update the left/right rectangle colours
-    left_rectangle.colour = round_control[current_round].left_rect
-    right_rectangle.colour = round_control[current_round].right_rect
+    local rect_idx = current_round
+    if (rect_idx > 3) then 
+        rect_idx = 3
+    end 
+    left_rectangle.colour = round_control[rect_idx].left_rect
+    right_rectangle.colour = round_control[rect_idx].right_rect
 
     if (current_stage == 2) then 
 
         if (is_round_over(timer)) then 
             current_round = current_round + 1
-            if (current_round >= 3) then 
+            if (current_round > 3) then 
                 current_stage = 3
                 return
                 --love.event.quit()
