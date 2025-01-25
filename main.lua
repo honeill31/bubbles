@@ -151,11 +151,11 @@ local function spawnCircle(x, y)
 
     if (can_pop) then
         local col = love.math.random()
-        if (col < 0.33) then
+        if (col <= 0.33) then
             bubble_colour = round_control[current_round].b_1
         elseif (col > 0.33 and col < 0.66) then
             bubble_colour = round_control[current_round].b_2
-        elseif (col > 0.66) then
+        elseif (col >= 0.66) then
             bubble_colour = round_control[current_round].b_3
         end 
     end
@@ -183,6 +183,17 @@ local function spawnCircle(x, y)
         canPop = can_pop,
         isScored = false
     })
+end
+
+function should_delete(circle)
+    -- Is this circle the right colour for this round?
+    local round_info = round_control[current_round]
+    should = circle.colour ~= round_info.left_rect and 
+    circle.colour ~= round_info.right_rect and
+    circle.colour ~= round_info.b_1 and 
+    circle.colour ~= round_info.b_2 and 
+    circle.colour ~= round_info.b_3
+    return should
 end
 
 -- LOVE UPDATE --
@@ -241,9 +252,9 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
             local circle = circles[i]
             local circleX, circleY = circle.body:getPosition()
     
-            -- Destroy circle if it goes below the bottom of the window
+            -- Destroy circle if it goes below the bottom of the window, or if wrong colour
             _, height, _ = love.window.getMode()
-            if (circleY > height) then
+            if (circleY > height) or (should_delete(circle)) then
                 table.insert(toRemove, i)
                 goto continue
             end
