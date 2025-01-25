@@ -13,6 +13,18 @@ local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
 local gravity = 300
 
+
+local loadingBar = {
+    x = 128,                -- X position of the bar
+    y = 0,                -- Y position of the bar
+    width = 544,           -- Total width of the bar
+    height = 20,           -- Height of the bar
+    alpha = 0.8,            -- Opacity of the entire bar (50% transparent)
+    color = {0.667, 0.667, 0.678, 1}, -- Bar fill color (default full opacity)
+    backgroundColor = {0.5, 0.5, 0.5, 0.3} -- Background color of the bar
+
+}
+
 local current_round = 1
 local current_stage = 1
 
@@ -164,6 +176,18 @@ end
 -- LOVE UPDATE --
 
 function love.update(dt)
+
+-- Update the physics world
+world:update(dt)
+
+-- Decrement the timer
+timer = math.max(0, timer - dt)
+
+-- Calculate the current width of the loading bar
+local timeLeftPercent = timer / timer_begin
+loadingBar.currentWidth = loadingBar.width * timeLeftPercent
+
+
     -- Update the physics world
     world:update(dt)
     timer = timer - dt
@@ -433,5 +457,28 @@ function love.draw()
 
         end
     end
+
+    if current_stage == 2 then
+       -- Draw the loading bar background
+    love.graphics.setColor(
+        loadingBar.backgroundColor[1], 
+        loadingBar.backgroundColor[2], 
+        loadingBar.backgroundColor[3], 
+        loadingBar.backgroundColor[4] * loadingBar.alpha
+    )
+    love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
+
+    -- Draw the loading bar fill (loading part)
+    local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
+    love.graphics.setColor(
+        loadingBar.color[1], 
+        loadingBar.color[2], 
+        loadingBar.color[3], 
+        loadingBar.color[4] * loadingBar.alpha
+    )
+    love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
+    end
+
+
 end
 
