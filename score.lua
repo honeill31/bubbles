@@ -15,7 +15,7 @@ end
 
 function in_right_rect(circleX)
     width, _, _ = love.window.getMode()
-    return (circleX < right_rectangle.x)
+    return (circleX > W()-right_rectangle.width)
 end
 
 function is_same_colour(circle, rect)
