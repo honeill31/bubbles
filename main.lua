@@ -15,6 +15,21 @@ local ballImage -- ball image
 local basketImage -- basket image
 local score = 0 -- To store the score
 
+ -- Rectangles
+left_rectangle = {
+    x = 10,
+    y = 400,
+    width = 300,
+    height = 300
+}
+
+right_rectangle = {
+    x = 1290,
+    y = 400,
+    width = 300,
+    height = 300
+}
+
 
 -- LOVE LOAD --
 
@@ -70,19 +85,7 @@ function love.update(dt)
 end
 
 -- COLLISIONS --
-
 -- collisions for the rectangles -- 
-    -- Left rectangle dimensions
-    local leftRectX = 10
-    local leftRectY = 400
-    local leftRectWidth = 300
-    local leftRectHeight = 300
-
-    -- Right rectangle dimensions
-    local rightRectX = 1290
-    local rightRectY = 400
-    local rightRectWidth = 300
-    local rightRectHeight = 300
 
     -- Collision detection function
     local function checkCircleRectCollision(circleX, circleY, circleRadius, rectX, rectY, rectWidth, rectHeight)
@@ -106,8 +109,12 @@ end
 
 
         -- Destroy circle if it goes below the bottom of the window
-        -- TODO: Get this value from the confv
-        if (circleY > 600) then 
+        _, height, _ = love.window.getMode()
+        if (circleY > height) then 
+            --We need to also check the score
+            if can_increase_score(circleX) then 
+                score = increase_score(score)
+            end
             circle.body:destroy()
             table.remove(circles, i)
             goto continue
@@ -117,11 +124,11 @@ end
         circle.colliding = false
 
         -- Collision checks for rectangles
-        if checkCircleRectCollision(circleX, circleY, circleRadius, leftRectX, leftRectY, leftRectWidth, leftRectHeight) then
+        if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
             circle.colliding = true -- Mark circle as colliding
         end
 
-        if checkCircleRectCollision(circleX, circleY, circleRadius, rightRectX, rightRectY, rightRectWidth, rightRectHeight) then
+        if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
             circle.colliding = true -- Mark circle as colliding
         end
 
