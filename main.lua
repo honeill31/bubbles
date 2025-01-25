@@ -395,6 +395,12 @@ function love.mousepressed(x, y, button, istouch, presses)
             end
         end
     end
+    if (current_stage == 3) then 
+        current_stage = 2
+        current_round = 1
+        score = 0
+        timer = timer_begin
+    end
 end
 
 
@@ -462,6 +468,14 @@ function love.draw()
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         local num_string = tostring(score)
         love.graphics.print(num_string, W()/2 + 5, H()/2)
+
+        local restart_text = "click/tap to restart"
+        local col = round_control[3].b_1
+        local col2 = round_control[3].b_2
+        love.graphics.setColor(get_colour(col.red), get_colour(col.green), get_colour(col.blue), get_colour(col.alpha))
+        love.graphics.rectangle("fill", W()/2-font:getWidth(restart_text)/2, H()/1.5, font:getWidth(restart_text) + 10, H()/8)
+        love.graphics.setColor(get_colour(col2.red), get_colour(col2.green), get_colour(col2.blue), get_colour(col2.alpha))
+        love.graphics.print(restart_text, W()/2 - font:getWidth(restart_text)/2 + 5, H()/1.4)
     end
 
     if (current_stage == 2) then 
