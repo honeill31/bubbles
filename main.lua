@@ -50,7 +50,8 @@ round_control[2] = round_2_colours
 round_control[3] = round_3_colours
 
 -- Timer
-timer = 20.0
+timer = 5.0
+timer_begin = 5.0
 
 W = function() return love.graphics.getWidth() end
 H = function() return love.graphics.getHeight() end
@@ -166,21 +167,21 @@ function love.update(dt)
     world:update(dt)
     timer = timer - dt
 
+    -- Update the left/right rectangle colours
+    left_rectangle.colour = round_control[current_round].left_rect
+    right_rectangle.colour = round_control[current_round].right_rect
+
     if (current_stage == 2) then 
 
         if (is_round_over(timer)) then 
             current_round = current_round + 1
-            if (current_round > 3) then 
-                -- reset the round, todo let's make an end screen or something with your score
-                current_round = 1
+            if (current_round >= 3) then 
+                current_stage = 3
+                return
                 --love.event.quit()
             end
-            timer = reset_timer(timer)
+            timer = timer_begin
         end
-    
-        -- Update the left/right rectangle colours
-        left_rectangle.colour = round_control[current_round].left_rect
-        right_rectangle.colour = round_control[current_round].right_rect
     
         -- Handle spawning new circles
         spawnTimer = spawnTimer + dt
@@ -384,6 +385,20 @@ function love.draw()
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         love.graphics.print(game_string, W()/2 + 5, H()/2)
 
+    end
+
+    if (current_stage == 3) then 
+        love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
+        love.graphics.rectangle("fill", 0, 0, W()/2, H())
+        love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+        love.graphics.rectangle("fill", W()/2, 0, W()/2, H())
+
+        local score_string = "score"
+        love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+        love.graphics.print(score_string, W()/2-font:getWidth(score_string)- 5, H()/2)
+        love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
+        local num_string = tostring(score)
+        love.graphics.print(num_string, W()/2 + 5, H()/2)
     end
 
     if (current_stage == 2) then 
