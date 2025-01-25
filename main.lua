@@ -1,3 +1,6 @@
+
+-- VARIABLES FOR BUBBLES --
+
 local world
 local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
@@ -5,6 +8,11 @@ local spawnInterval = 0.3 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
 local circleLifespan = 5 -- Lifespan of a circle in seconds
 local bubbleImage -- To store the bubble image
+
+
+-- LOVE LOAD --
+
+-- fOR LODING ASSETS INTO THE GAME
 
 function love.load()
     -- Initialize the physics world
@@ -14,6 +22,8 @@ function love.load()
     bubbleImage = love.graphics.newImage("bubble.png")
 end
 
+
+-- FUNCTIONS --
 -- Function to create a new circle
 local function spawnCircle(x, y)
     local body = love.physics.newBody(world, x, y, "dynamic")
@@ -34,6 +44,10 @@ local function spawnCircle(x, y)
     })
 end
 
+
+
+-- LOVE UPDATE --
+
 function love.update(dt)
     -- Update the physics world
     world:update(dt)
@@ -43,8 +57,11 @@ function love.update(dt)
     if spawnTimer >= spawnInterval then
         spawnTimer = 0
         spawnCircle(love.math.random(500, 1000), -circleRadius) -- Spawn at random X position above the screen
-    end
+end
 
+-- COLLISIONS --
+
+-- collisions for the rectangles -- 
     -- Left rectangle dimensions
     local leftRectX = 10
     local leftRectY = 400
@@ -98,6 +115,12 @@ function love.update(dt)
             circle.colliding = true -- Mark circle as colliding
         end
 
+
+
+-- COLLISIONS END
+
+-- DRAGGING MECHANIC --
+
         -- Handle dragging
         if circle.dragging then
             local mouseX, mouseY = love.mouse.getPosition()
@@ -108,6 +131,8 @@ function love.update(dt)
         ::continue::
     end
 end
+
+-- MOUSE PRESS --
 
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then
@@ -144,6 +169,10 @@ function love.mousereleased(x, y, button, istouch, presses)
         end
     end
 end
+
+
+
+-- GRAPHICS SETTINGS 
 
 function love.draw()
     -- Draw each circle
