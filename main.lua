@@ -16,18 +16,19 @@ local basketImage -- basket image
 local score = 0 -- To store the score
 
  -- Rectangles
+left_rectangle = {
+    x = 10,
+    y = 400,
+    width = 300,
+    height = 300
+}
 
--- Left rectangle dimensions
-local leftRectX = 10
-local leftRectY = 400
-local leftRectWidth = 300
-local leftRectHeight = 300
-
--- Right rectangle dimensions
-local rightRectX = 1290
-local rightRectY = 400
-local rightRectWidth = 300
-local rightRectHeight = 300
+right_rectangle = {
+    x = 1290,
+    y = 400,
+    width = 300,
+    height = 300
+}
 
 
 -- LOVE LOAD --
@@ -123,11 +124,11 @@ end
         circle.colliding = false
 
         -- Collision checks for rectangles
-        if checkCircleRectCollision(circleX, circleY, circleRadius, leftRectX, leftRectY, leftRectWidth, leftRectHeight) then
+        if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
             circle.colliding = true -- Mark circle as colliding
         end
 
-        if checkCircleRectCollision(circleX, circleY, circleRadius, rightRectX, rightRectY, rightRectWidth, rightRectHeight) then
+        if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
             circle.colliding = true -- Mark circle as colliding
         end
 
