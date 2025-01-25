@@ -44,40 +44,42 @@ ball_3 = {
 
 -- STAGE 2
 
+-- Updated color values
 s2_left_rectangle_colour = {
-    red = 0, -- From #0081a7
-    green = 129,
-    blue = 167,
+    red = 67,  -- From #43684f
+    green = 104,
+    blue = 79,
     alpha = 255
 }
 
 s2_right_rectangle_colour = {
-    red = 240, -- From #f07167
-    green = 113,
-    blue = 103,
+    red = 182, -- From #b69a75
+    green = 154,
+    blue = 117,
     alpha = 255
 }
 
 s2_ball_1 = {
-    red = 0, -- From #00afb9
-    green = 175,
-    blue = 185,
+    red = 43,  -- From #2b4a48
+    green = 74,
+    blue = 72,
     alpha = 255
 }
 
 s2_ball_2 = {
-    red = 253, -- From #fdfcdc
-    green = 252,
-    blue = 220,
+    red = 142, -- From #8e6446
+    green = 100,
+    blue = 70,
     alpha = 255
 }
 
 s2_ball_3 = {
-    red = 254, -- From #fed9b7
-    green = 217,
-    blue = 183,
+    red = 215, -- From #d7c7b3
+    green = 199,
+    blue = 179,
     alpha = 255
 }
+
 
 -- STAGE 3
 
@@ -96,9 +98,9 @@ s3_right_rectangle_colour = {
 }
 
 s3_ball_1 = {
-    red = 249,
-    green = 97,
-    blue = 97,
+    red = 250,
+    green = 144,
+    blue = 144,
     alpha = 255
 }
 
