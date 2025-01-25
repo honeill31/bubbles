@@ -100,8 +100,12 @@ end
 
 
         -- Destroy circle if it goes below the bottom of the window
-        -- TODO: Get this value from the confv
-        if (circleY > 600) then 
+        _, height, _ = love.window.getMode()
+        if (circleY > height) then 
+            --We need to also check the score
+            if can_increase_score(circleX) then 
+                score = increase_score(score)
+            end
             circle.body:destroy()
             table.remove(circles, i)
             goto continue
