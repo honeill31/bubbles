@@ -4,8 +4,8 @@ function increase_score(sc)
 end
 
 function can_increase_score(circleX)
-
-    if (circleX < left_rectangle.x or circleX > right_rectangle.x) then
+    width, _, _ = love.window.getMode()
+    if (circleX < left_rectangle.x + left_rectangle.width or circleX > right_rectangle.x) then
         return true
     end
 
