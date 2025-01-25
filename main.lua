@@ -15,21 +15,21 @@ local ballImage -- ball image
 local basketImage -- basket image
 local score = 0 -- To store the score
 
-
+local screenwidth, screenHeight, _ = love.window.getMode()
 
 
  -- Rectangles
 left_rectangle = {
-    x = 10,
-    y = 400,
-    width = 64,
+    x = 0,
+    y = screenHeight-64,
+    width = 128,
     height = 64
 }
 
 right_rectangle = {
-    x = 1290,
-    y = 400,
-    width = 64,
+    x = screenwidth-128,
+    y = screenHeight-64,
+    width = 128,
     height = 64
 }
 
@@ -315,24 +315,27 @@ function love.draw()
         end
     end
 
-    love.graphics.setColor(1, 1, 1) -- Reset color for the image
-    love.graphics.draw(
-        basketImage, 
-        left_rectangle.x, 
-        left_rectangle.y, 
-        0, 
-        basketImage:getWidth()/20,
-        basketImage:getHeight()/20
-    )
+    love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
+    love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
+    --love.graphics.print(tostring(basketImage:getWidth()))
+    -- love.graphics.setColor(1, 1, 1) -- Reset color for the image
+    -- love.graphics.draw(
+    --     basketImage, 
+    --     left_rectangle.x, 
+    --     left_rectangle.y, 
+    --     0, 
+    --     left_rectangle.width,
+    --     left_rectangle.height
+    -- )
 
-    love.graphics.setColor(1, 1, 1) -- Reset color for the image
-    love.graphics.draw(
-        basketImage, 
-        right_rectangle.x, 
-        right_rectangle.y, 
-        0, 
-        basketImage:getWidth()/20,
-        basketImage:getHeight()/20
-    )
+    -- love.graphics.setColor(1, 1, 1) -- Reset color for the image
+    -- love.graphics.draw(
+    --     basketImage, 
+    --     right_rectangle.x, 
+    --     right_rectangle.y, 
+    --     0, 
+    --     basketImage:getWidth()/20,
+    --     basketImage:getHeight()/20
+    -- )
 end
 
