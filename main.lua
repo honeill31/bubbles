@@ -19,15 +19,15 @@ local score = 0 -- To store the score
 left_rectangle = {
     x = 10,
     y = 400,
-    width = 300,
-    height = 300
+    width = 64,
+    height = 64
 }
 
 right_rectangle = {
     x = 1290,
     y = 400,
-    width = 300,
-    height = 300
+    width = 64,
+    height = 64
 }
 
 
@@ -240,14 +240,24 @@ function love.draw()
         end
     end
 
-    love.graphics.setColor(1, 1, 1) -- Reset color
+    love.graphics.setColor(1, 1, 1) -- Reset color for the image
+    love.graphics.draw(
+        basketImage, 
+        left_rectangle.x, 
+        left_rectangle.y, 
+        0, 
+        basketImage:getWidth()/20,
+        basketImage:getHeight()/20
+    )
 
-    -- Draw left rectangle
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("fill", 10, 400, 300, 300)
-
-    -- Draw right rectangle
-    love.graphics.setColor(0, 0, 1)
-    love.graphics.rectangle("fill", 1290, 400, 300, 300)
+    love.graphics.setColor(1, 1, 1) -- Reset color for the image
+    love.graphics.draw(
+        basketImage, 
+        right_rectangle.x, 
+        right_rectangle.y, 
+        0, 
+        basketImage:getWidth()/20,
+        basketImage:getHeight()/20
+    )
 end
 
