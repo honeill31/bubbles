@@ -28,14 +28,14 @@ ball_1 = {
 
 ball_2 = {
     red = 0,
-    green = 0,
+    green = 255,
     blue = 0,
     alpha = 255
 }
 
 ball_3 = {
-    red = 255,
+    red = 0,
     green = 0,
-    blue = 0,
+    blue = 255,
     alpha = 255
 }
