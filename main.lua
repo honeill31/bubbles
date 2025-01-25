@@ -9,7 +9,6 @@ require "timer"
 local world
 local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
-local spawnInterval = .5 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
 local basketImage -- basket image
 local score = 0 -- To store the score
@@ -22,14 +21,16 @@ local round_2_colours = {
     right_rect = s2_right_rectangle_colour,
     b_1 = s2_ball_1,
     b_2 = s2_ball_2,
-    b_3 = s2_ball_3
+    b_3 = s2_ball_3,
+    spawn = 0.5
 }
 local round_3_colours = {
     left_rect = s3_left_rectangle_colour,
     right_rect = s3_right_rectangle_colour,
     b_1 = s3_ball_1,
     b_2 = s3_ball_2,
-    b_3 = s3_ball_3
+    b_3 = s3_ball_3,
+    spawn = 0.3
 }
 
 local round_1_colours = {
@@ -37,7 +38,8 @@ local round_1_colours = {
     right_rect = right_rectangle_colour,
     b_1 = ball_1,
     b_2 = ball_2,
-    b_3 = ball_3
+    b_3 = ball_3,
+    spawn = 1
 }
 
 local round_control = {}
@@ -66,14 +68,16 @@ left_rectangle = {
     x = 0,
     y = 0,
     width = 128,
-    height = H()
+    height = H(),
+    colour = left_rectangle_colour
 }
 
 right_rectangle = {
     x = W()-128,
     y = 0,
     width = 128,
-    height = H()
+    height = H(),
+    colour = right_rectangle_colour
 }
 
 -- Track the active colours for the left and right rectangles
@@ -160,6 +164,12 @@ end
 function love.update(dt)
     -- Update the physics world
     world:update(dt)
+
+-- Update the left/right rectangle colours
+    left_rectangle.colour = round_control[current_round].left_rect
+    right_rectangle.colour = round_control[current_round].right_rect
+
+
     timer = timer - dt
 
     if (is_round_over(timer)) then 
@@ -174,7 +184,7 @@ function love.update(dt)
 
     -- Handle spawning new circles
     spawnTimer = spawnTimer + dt
-    if spawnTimer >= spawnInterval then
+    if spawnTimer >= round_control[current_round].spawn then
         spawnTimer = 0
         local min_val = left_rectangle.width + circleRadius * 2
         local max_val = W() - right_rectangle.width - circleRadius * 2
@@ -191,8 +201,14 @@ function love.update(dt)
         -- Destroy circle if it goes below the bottom of the window
         _, height, _ = love.window.getMode()
         if (circleY > height) then
-            if can_increase_score(circleX) then
-                score = increase_score(score)
+            if in_left_rect(circleX) then 
+                if (is_same_colour(circle, left_rectangle)) then 
+                    score = add_score(score, 2)
+                end
+            elseif in_right_rect(circleX) then 
+                if (is_same_colour(circle, right_rectangle)) then 
+                    score = add_score(score, 2)
+                end
             end
             table.insert(toRemove, i)
             goto continue
@@ -371,7 +387,6 @@ function love.draw()
     -- Draw each circle
     for _, circle in ipairs(circles) do
         local x, y = circle.body:getPosition()
-
         love.graphics.setColor(get_colour(circle.colour.red), get_colour(circle.colour.green), get_colour(circle.colour.blue), get_colour(circle.colour.alpha))
         love.graphics.circle("fill", x, y, circleRadius)
 
