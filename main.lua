@@ -194,7 +194,7 @@ function love.update(dt)
             spawnTimer = 0
             local min_val = left_rectangle.width + circleRadius * 2
             local max_val = W() - right_rectangle.width - circleRadius * 2
-            spawnCircle(love.math.random(min_val, max_val), -circleRadius) -- Spawn at random X position above the screen
+            spawnCircle(love.math.random(min_val, max_val), 0) -- Spawn at random X position above the screen
         end
     
         -- Check for collisions and bubble-ball interactions
@@ -267,7 +267,6 @@ function love.update(dt)
             local circle = circles[i]
     
             local circleX, circleY = circle.body:getPosition()
-    
     
             -- Destroy circle if it goes below the bottom of the window
             _, height, _ = love.window.getMode()
