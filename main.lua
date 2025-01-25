@@ -15,11 +15,9 @@ local score = 0 -- To store the score
 local gravity = 500
 
 local current_round = 1
+local current_stage = 1
 
-local stages = 
-{
-    
-}
+local font = love.graphics.newFont(50)
 
 local round_2_colours = {
     left_rect = s2_left_rectangle_colour,
@@ -101,7 +99,8 @@ function love.load()
     -- Initialize the physics world
     world = love.physics.newWorld(0, gravity, true) -- Gravity of 500 in the Y direction
     love.graphics.setBackgroundColor(get_colour(background_colour.red), get_colour(background_colour.green), get_colour(background_colour.blue), get_colour(background_colour.alpha))
-    font = love.graphics.newFont(32)
+
+    love.graphics.setFont(font)
 
     -- Load the images
     bubbleImage = love.graphics.newImage("bubble.png")
@@ -171,172 +170,184 @@ function love.update(dt)
     world:update(dt)
     timer = timer - dt
 
-    if (is_round_over(timer)) then 
-        current_round = current_round + 1
-        if (current_round > 3) then 
-            -- reset the round, todo let's make an end screen or something with your score
-            current_round = 1
-            --love.event.quit()
-        end
-        timer = reset_timer(timer)
-    end
+    if (current_stage == 2) then 
 
-    -- Update the left/right rectangle colours
-    left_rectangle.colour = round_control[current_round].left_rect
-    right_rectangle.colour = round_control[current_round].right_rect
-
-    -- Handle spawning new circles
-    spawnTimer = spawnTimer + dt
-    if spawnTimer >= round_control[current_round].spawn then
-        spawnTimer = 0
-        local min_val = left_rectangle.width + circleRadius * 2
-        local max_val = W() - right_rectangle.width - circleRadius * 2
-        spawnCircle(love.math.random(min_val, max_val), -circleRadius) -- Spawn at random X position above the screen
-    end
-
-    -- Check for collisions and bubble-ball interactions
-    local toRemove = {} -- Keep track of bubbles to remove
-
-    for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
-        local circle = circles[i]
-        local circleX, circleY = circle.body:getPosition()
-
-        -- Destroy circle if it goes below the bottom of the window
-        _, height, _ = love.window.getMode()
-        if (circleY > height) then
-            if in_left_rect(circleX) then 
-                if (is_same_colour(circle, left_rectangle)) then 
-                    score = add_score(score, 2)
-                end
-            elseif in_right_rect(circleX) then 
-                if (is_same_colour(circle, right_rectangle)) then 
-                    score = add_score(score, 2)
-                end
+        if (is_round_over(timer)) then 
+            current_round = current_round + 1
+            if (current_round > 3) then 
+                -- reset the round, todo let's make an end screen or something with your score
+                current_round = 1
+                --love.event.quit()
             end
-            table.insert(toRemove, i)
-            goto continue
+            timer = reset_timer(timer)
         end
-
-        -- Check for collisions between pop-able bubbles and held balls
-        if circle.canPop then -- Only for pop-able bubbles
-            for _, otherCircle in ipairs(circles) do
-                if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
-                    local otherX, otherY = otherCircle.body:getPosition()
-
-                    -- Calculate the distance between the bubble and the held ball
-                    local dx = circleX - otherX
-                    local dy = circleY - otherY
-                    local distance = math.sqrt(dx * dx + dy * dy)
-
-                    -- If the distance is less than the sum of their radii, pop the bubble
-                    if distance <= circleRadius * 2 then
-                        -- Play a random pop sound
-                        local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
-                        randomSound:play()
-
-                        -- Mark the pop-able bubble for removal
-                        table.insert(toRemove, i)
-                        break -- No need to check further; the bubble will pop
+    
+        -- Update the left/right rectangle colours
+        left_rectangle.colour = round_control[current_round].left_rect
+        right_rectangle.colour = round_control[current_round].right_rect
+    
+        -- Handle spawning new circles
+        spawnTimer = spawnTimer + dt
+        if spawnTimer >= round_control[current_round].spawn then
+            spawnTimer = 0
+            local min_val = left_rectangle.width + circleRadius * 2
+            local max_val = W() - right_rectangle.width - circleRadius * 2
+            spawnCircle(love.math.random(min_val, max_val), -circleRadius) -- Spawn at random X position above the screen
+        end
+    
+        -- Check for collisions and bubble-ball interactions
+        local toRemove = {} -- Keep track of bubbles to remove
+    
+        for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
+            local circle = circles[i]
+            local circleX, circleY = circle.body:getPosition()
+    
+            -- Destroy circle if it goes below the bottom of the window
+            _, height, _ = love.window.getMode()
+            if (circleY > height) then
+                if in_left_rect(circleX) then 
+                    if (is_same_colour(circle, left_rectangle)) then 
+                        score = add_score(score, 2)
+                    end
+                elseif in_right_rect(circleX) then 
+                    if (is_same_colour(circle, right_rectangle)) then 
+                        score = add_score(score, 2)
+                    end
+                end
+                table.insert(toRemove, i)
+                goto continue
+            end
+    
+            -- Check for collisions between pop-able bubbles and held balls
+            if circle.canPop then -- Only for pop-able bubbles
+                for _, otherCircle in ipairs(circles) do
+                    if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
+                        local otherX, otherY = otherCircle.body:getPosition()
+    
+                        -- Calculate the distance between the bubble and the held ball
+                        local dx = circleX - otherX
+                        local dy = circleY - otherY
+                        local distance = math.sqrt(dx * dx + dy * dy)
+    
+                        -- If the distance is less than the sum of their radii, pop the bubble
+                        if distance <= circleRadius * 2 then
+                            -- Play a random pop sound
+                            local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
+                            randomSound:play()
+    
+                            -- Mark the pop-able bubble for removal
+                            table.insert(toRemove, i)
+                            break -- No need to check further; the bubble will pop
+                        end
                     end
                 end
             end
+    
+            ::continue::
         end
-
-        ::continue::
-    end
-
-    -- Remove all marked circles
-    for _, i in ipairs(toRemove) do
-        circles[i].body:destroy()
-        table.remove(circles, i)
-    end
-
--- COLLISIONS --
--- collisions for the rectangles -- 
-
-    -- Collision detection function
-    local function checkCircleRectCollision(circleX, circleY, circleRadius, rectX, rectY, rectWidth, rectHeight)
-        -- Find the closest point on the rectangle to the circle's center
-        local closestX = math.max(rectX, math.min(circleX, rectX + rectWidth))
-        local closestY = math.max(rectY, math.min(circleY, rectY + rectHeight))
-
-        -- Calculate the distance between the circle's center and this closest point
-        local distanceX = circleX - closestX
-        local distanceY = circleY - closestY
-
-        -- If the distance is less than the circle's radius, there's a collision
-        return (distanceX * distanceX + distanceY * distanceY) < (circleRadius * circleRadius)
-    end
-
-    -- Check for collisions between circles and rectangles
-    for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
-        local circle = circles[i]
-
-        local circleX, circleY = circle.body:getPosition()
-
-
-        -- Destroy circle if it goes below the bottom of the window
-        _, height, _ = love.window.getMode()
-        if (circleY > height) then 
-            circle.body:destroy()
+    
+        -- Remove all marked circles
+        for _, i in ipairs(toRemove) do
+            circles[i].body:destroy()
             table.remove(circles, i)
-            goto continue
         end
-
-        -- Reset collision flag
-        circle.colliding = false
-
-        -- Collision checks for rectangles
-        if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
-            circle.colliding = true -- Mark circle as colliding
+    
+    -- COLLISIONS --
+    -- collisions for the rectangles -- 
+    
+        -- Collision detection function
+        local function checkCircleRectCollision(circleX, circleY, circleRadius, rectX, rectY, rectWidth, rectHeight)
+            -- Find the closest point on the rectangle to the circle's center
+            local closestX = math.max(rectX, math.min(circleX, rectX + rectWidth))
+            local closestY = math.max(rectY, math.min(circleY, rectY + rectHeight))
+    
+            -- Calculate the distance between the circle's center and this closest point
+            local distanceX = circleX - closestX
+            local distanceY = circleY - closestY
+    
+            -- If the distance is less than the circle's radius, there's a collision
+            return (distanceX * distanceX + distanceY * distanceY) < (circleRadius * circleRadius)
         end
-
-        if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
-            circle.colliding = true -- Mark circle as colliding
+    
+        -- Check for collisions between circles and rectangles
+        for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
+            local circle = circles[i]
+    
+            local circleX, circleY = circle.body:getPosition()
+    
+    
+            -- Destroy circle if it goes below the bottom of the window
+            _, height, _ = love.window.getMode()
+            if (circleY > height) then 
+                circle.body:destroy()
+                table.remove(circles, i)
+                goto continue
+            end
+    
+            -- Reset collision flag
+            circle.colliding = false
+    
+            -- Collision checks for rectangles
+            if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
+                circle.colliding = true -- Mark circle as colliding
+            end
+    
+            if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
+                circle.colliding = true -- Mark circle as colliding
+            end
+    
+    
+    
+    -- COLLISIONS END
+    
+    -- DRAGGING MECHANIC --
+    
+            -- Handle dragging
+            if circle.dragging then
+                local mouseX, mouseY = love.mouse.getPosition()
+                circle.body:setPosition(mouseX, mouseY) -- Move the circle to the mouse position
+                circle.body:setLinearVelocity(0, 0) -- Stop other motion while dragging
+            end
+    
+            ::continue::
         end
-
-
-
--- COLLISIONS END
-
--- DRAGGING MECHANIC --
-
-        -- Handle dragging
-        if circle.dragging then
-            local mouseX, mouseY = love.mouse.getPosition()
-            circle.body:setPosition(mouseX, mouseY) -- Move the circle to the mouse position
-            circle.body:setLinearVelocity(0, 0) -- Stop other motion while dragging
-        end
-
-        ::continue::
     end
 end
 
 -- MOUSE PRESS --
 
 function love.mousepressed(x, y, button, istouch, presses)
-    if button == 1 then
-        for i = #circles, 1, -1 do -- Iterate backward to safely remove items
-            local circle = circles[i]
-            local circleX, circleY = circle.body:getPosition()
-            local dx, dy = x - circleX, y - circleY
-            local isHovered = (dx * dx + dy * dy) <= (circleRadius * circleRadius)
 
-            if isHovered then
-                if circle.canPop then
-                    -- Play a random pop sound
-                    local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
-                    randomSound:play()
+    if (current_stage == 1) then 
+        current_stage = 2
+        font = love.graphics.newFont(32)
+        love.graphics.setFont(font)
+    end
 
-                    -- If the circle can pop, remove it
-                    circle.body:destroy() -- Destroy the physics body
-                    table.remove(circles, i)
-                    return -- Stop processing further since a circle was popped
-                else
-                    -- If not pop-able, start dragging
-                    circle.dragging = true
-                    circle.body:setType("kinematic") -- Temporarily disable physics
-                    break
+    if (current_stage == 2) then 
+        if button == 1 then
+            for i = #circles, 1, -1 do -- Iterate backward to safely remove items
+                local circle = circles[i]
+                local circleX, circleY = circle.body:getPosition()
+                local dx, dy = x - circleX, y - circleY
+                local isHovered = (dx * dx + dy * dy) <= (circleRadius * circleRadius)
+    
+                if isHovered then
+                    if circle.canPop then
+                        -- Play a random pop sound
+                        local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
+                        randomSound:play()
+    
+                        -- If the circle can pop, remove it
+                        circle.body:destroy() -- Destroy the physics body
+                        table.remove(circles, i)
+                        return -- Stop processing further since a circle was popped
+                    else
+                        -- If not pop-able, start dragging
+                        circle.dragging = true
+                        circle.body:setType("kinematic") -- Temporarily disable physics
+                        break
+                    end
                 end
             end
         end
@@ -345,11 +356,13 @@ end
 
 
 function love.mousereleased(x, y, button, istouch, presses)
-    if button == 1 then
-        for _, circle in ipairs(circles) do
-            if circle.dragging then
-                circle.dragging = false
-                circle.body:setType("dynamic") -- Re-enable physics
+    if (current_stage == 1) then 
+        if button == 1 then
+            for _, circle in ipairs(circles) do
+                if circle.dragging then
+                    circle.dragging = false
+                    circle.body:setType("dynamic") -- Re-enable physics
+                end
             end
         end
     end
@@ -361,34 +374,49 @@ end
 
 function love.draw()
 
-    -- Draw the score in the top left corner
-    local score_string = string.format("Score: %d", score)
-    font = love.graphics.newFont(25)
-    love.graphics.setFont(font)
-    love.graphics.print(score_string, left_rectangle.x + 150, 20)
+    if (current_stage == 1) then 
+        love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
+        love.graphics.rectangle("fill", 0, 0, W()/2, H())
+        love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+        love.graphics.rectangle("fill", W()/2, 0, W()/2, H())
 
-    -- Draw the timer 
-    local timer_string = string.format("Timer: %.1f", timer)
-    love.graphics.print(timer_string, right_rectangle.x - 150, 20)
+        local start_string = "start"
+        local game_string  = "game"
+        love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+        love.graphics.print(start_string, W()/2-font:getWidth(start_string)- 5, H()/2)
+        love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
+        love.graphics.print(game_string, W()/2 + 5, H()/2)
 
-    -- Draw current round 
-    local round_string = string.format("Current round: %d", current_round)
-    love.graphics.print(round_string, W()/2 - 100, 10)
+    end
+
+    if (current_stage == 2) then 
+        -- Draw the score in the top left corner
+        local score_string = string.format("Score: %d", score)
+        love.graphics.print(score_string, left_rectangle.x + 150, 20)
+
+        -- Draw the timer 
+        local timer_string = string.format("Timer: %.1f", timer)
+        love.graphics.print(timer_string, right_rectangle.x - 150, 20)
+
+        -- Draw current round 
+        local round_string = string.format("Current round: %d", current_round)
+        love.graphics.print(round_string, W()/2 - 100, 10)
 
 
-    -- Draw the rectangles using the color values
-    love.graphics.setColor(get_colour(round_control[current_round].left_rect.red), get_colour(round_control[current_round].left_rect.green), get_colour(round_control[current_round].left_rect.blue), get_colour(round_control[current_round].left_rect.alpha))
-    love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
-    love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
-    love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
+        -- Draw the rectangles using the color values
+        love.graphics.setColor(get_colour(round_control[current_round].left_rect.red), get_colour(round_control[current_round].left_rect.green), get_colour(round_control[current_round].left_rect.blue), get_colour(round_control[current_round].left_rect.alpha))
+        love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
+        love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
+        love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
 
 
-    -- Draw each circle
-    for _, circle in ipairs(circles) do
-        local x, y = circle.body:getPosition()
-        love.graphics.setColor(get_colour(circle.colour.red), get_colour(circle.colour.green), get_colour(circle.colour.blue), get_colour(circle.colour.alpha))
-        love.graphics.circle("fill", x, y, circleRadius)
+        -- Draw each circle
+        for _, circle in ipairs(circles) do
+            local x, y = circle.body:getPosition()
+            love.graphics.setColor(get_colour(circle.colour.red), get_colour(circle.colour.green), get_colour(circle.colour.blue), get_colour(circle.colour.alpha))
+            love.graphics.circle("fill", x, y, circleRadius)
 
+        end
     end
 end
 
