@@ -8,7 +8,7 @@ require "colour"
 local world
 local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
-local spawnInterval = 1 -- Spawn a circle every second
+local spawnInterval = .5 -- Spawn a circle every second
 local circleRadius = 50 -- Size of the circle
 local basketImage -- basket image
 local score = 0 -- To store the score
