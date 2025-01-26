@@ -521,23 +521,23 @@ function love.draw()
 
     if current_stage == 2 then
        -- Draw the loading bar background
-    -- love.graphics.setColor(
-    --     loadingBar.backgroundColor[1], 
-    --     loadingBar.backgroundColor[2], 
-    --     loadingBar.backgroundColor[3], 
-    --     loadingBar.backgroundColor[4] * loadingBar.alpha
-    -- )
-    -- love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
+        love.graphics.setColor(
+            loadingBar.backgroundColor[1], 
+            loadingBar.backgroundColor[2], 
+            loadingBar.backgroundColor[3], 
+            loadingBar.backgroundColor[4] * loadingBar.alpha
+        )
+        love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
 
-    -- -- Draw the loading bar fill (loading part)
-    -- local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
-    -- love.graphics.setColor(
-    --     loadingBar.color[1], 
-    --     loadingBar.color[2], 
-    --     loadingBar.color[3], 
-    --     loadingBar.color[4] * loadingBar.alpha
-    -- )
-    -- love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
+        -- Draw the loading bar fill (loading part)
+        local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
+        love.graphics.setColor(
+            loadingBar.color[1], 
+            loadingBar.color[2], 
+            loadingBar.color[3], 
+            loadingBar.color[4] * loadingBar.alpha
+        )
+        love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
     end
 end
 
