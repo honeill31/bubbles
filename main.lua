@@ -276,7 +276,7 @@ function love.update(dt)
             local circleX, circleY = circle.body:getPosition()
 
             -- Try to score any circles
-            --score_circle(circle)
+            score_circle(circle)
     
             -- Destroy circle if it goes below the bottom of the window, or if wrong colour
             _, height, _ = love.window.getMode()
