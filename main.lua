@@ -292,19 +292,6 @@ function love.update(dt)
     -- COLLISIONS --
     -- collisions for the rectangles -- 
     
-        -- Collision detection function
-        local function checkCircleRectCollision(circleX, circleY, circleRadius, rectX, rectY, rectWidth, rectHeight)
-            -- Find the closest point on the rectangle to the circle's center
-            local closestX = math.max(rectX, math.min(circleX, rectX + rectWidth))
-            local closestY = math.max(rectY, math.min(circleY, rectY + rectHeight))
-    
-            -- Calculate the distance between the circle's center and this closest point
-            local distanceX = circleX - closestX
-            local distanceY = circleY - closestY
-    
-            -- If the distance is less than the circle's radius, there's a collision
-            return (distanceX * distanceX + distanceY * distanceY) < (circleRadius * circleRadius)
-        end
     
         -- Check for collisions between circles and rectangles
         for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
