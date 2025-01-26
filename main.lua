@@ -75,8 +75,8 @@ round_control[3] = round_3_colours
 timer = 20.0
 timer_begin = 20.0
 
-W = function() return love.graphics.getWidth() end
-H = function() return love.graphics.getHeight() end
+local W = love.graphics.getWidth()
+local H = love.graphics.getHeight()
 
 function get_colour(a_colour)
     result = 0
@@ -93,15 +93,15 @@ left_rectangle = {
     x = 0,
     y = 0,
     width = 128,
-    height = H(),
+    height = H,
     colour = left_rectangle_colour
 }
 
 right_rectangle = {
-    x = W()-128,
+    x = W-128,
     y = 0,
     width = 128,
-    height = H(),
+    height = H,
     colour = right_rectangle_colour
 }
 
@@ -209,14 +209,14 @@ function should_delete(circle)
 end
 
 -- LOVE UPDATE --
-love.frame = 0
+--love.frame = 0
 function love.update(dt)
 
-    love.frame = love.frame + 1
-    if love.frame%100 == 0 then
-      love.report = love.profiler.report(20)
-      love.profiler.reset()
-    end
+    -- love.frame = love.frame + 1
+    -- if love.frame%100 == 0 then
+    --   love.report = love.profiler.report(20)
+    --   love.profiler.reset()
+    -- end
 
     -- Update the physics world
     world:update(dt)
@@ -260,7 +260,7 @@ function love.update(dt)
         if spawnTimer >= round_control[current_round].spawn then
             spawnTimer = 0
             local min_val = left_rectangle.width + circleRadius * 2
-            local max_val = W() - right_rectangle.width - circleRadius * 2
+            local max_val = W - right_rectangle.width - circleRadius * 2
             spawnCircle(love.math.random(min_val, max_val), 0) -- Spawn at random X position above the screen
         end
     
@@ -447,33 +447,33 @@ function love.draw()
 
     if (current_stage == 1) then 
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
-        love.graphics.rectangle("fill", 0, 0, W()/2, H())
+        love.graphics.rectangle("fill", 0, 0, W/2, H)
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.rectangle("fill", W()/2, 0, W()/2, H())
+        love.graphics.rectangle("fill", W/2, 0, W/2, H)
 
         local start_string = "start"
         local game_string  = "game"
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.print(start_string, W()/2-font:getWidth(start_string)- 5, H()/2)
+        love.graphics.print(start_string, W/2-font:getWidth(start_string)- 5, H/2)
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
-        love.graphics.print(game_string, W()/2 + 5, H()/2)
+        love.graphics.print(game_string, W/2 + 5, H/2)
 
     end
 
     if (current_stage == 3) then
         -- Draw the left and right rectangle backgrounds
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
-        love.graphics.rectangle("fill", 0, 0, W() / 2, H())
+        love.graphics.rectangle("fill", 0, 0, W / 2, H)
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.rectangle("fill", W() / 2, 0, W() / 2, H())
+        love.graphics.rectangle("fill", W / 2, 0, W / 2, H)
     
         -- Draw the "score" text
         local score_string = "score"
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.print(score_string, W() / 2 - font:getWidth(score_string) - 5, H() / 2)
+        love.graphics.print(score_string, W / 2 - font:getWidth(score_string) - 5, H / 2)
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         local num_string = tostring(score)
-        love.graphics.print(num_string, W() / 2 + 5, H() / 2)
+        love.graphics.print(num_string, W / 2 + 5, H / 2)
     
         -- Draw the restart text
         local restart_text_part1 = "click/tap" -- First part of the text
@@ -484,8 +484,8 @@ function love.draw()
         -- Measure widths of the parts to calculate their positions
         local part1_width = font:getWidth(restart_text_part1)
         local total_width = font:getWidth(restart_text_part1 .. " " .. restart_text_part2)
-        local start_x = W() / 2 - total_width / 2 -- Centered start position
-        local y = H() / 1.4 -- Y position for the text
+        local start_x = W / 2 - total_width / 2 -- Centered start position
+        local y = H / 1.4 -- Y position for the text
     
         -- Draw the first part
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
@@ -535,7 +535,7 @@ function love.draw()
         love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
         love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
 
-        love.graphics.print(love.report or "Please wait...")
+        --love.graphics.print(love.report or "Please wait...")
 
 
         -- Draw each circle
