@@ -221,9 +221,6 @@ if (score < 0) then
     score = 0
 end
 
-    -- Update the physics world
-    world:update(dt)
-
     -- Update the left/right rectangle colours
     local rnd_idx = current_round
     if (rnd_idx > 3) then 
@@ -274,34 +271,6 @@ end
                 table.insert(toRemove, i)
                 goto continue
             end
--- REMOVING THIS CAUSE IT FEELS LIKE A BUG NOW
-        -- -- Check for collisions between pop-able bubbles and held balls
-        -- if circle.canPop then -- Only for pop-able bubbles
-        --     for _, otherCircle in ipairs(circles) do
-        --         if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
-        --             local otherX, otherY = otherCircle.body:getPosition()
-
-        --             -- Calculate the distance between the bubble and the held ball
-        --             local dx = circleX - otherX
-        --             local dy = circleY - otherY
-        --             local distance = math.sqrt(dx * dx + dy * dy)
-
-        --             -- If the distance is less than the sum of their radii, pop the bubble
-        --             if distance <= circleRadius * 2 then
-        --                 -- Play a random pop sound
-        --                 local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
-        --                 randomSound:play()
-                       
-                
-        --                 -- Mark the pop-able bubble for removal
-        --                 table.insert(toRemove, i)
-        --                 break -- No need to check further; the bubble will pop
-        --             end
-        --         end
-        --     end
-    
-        --     ::continue::
-        -- end
     
         -- Remove all marked circles
         for _, i in ipairs(toRemove) do
