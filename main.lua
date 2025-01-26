@@ -443,7 +443,7 @@ end
 function score_circle(circle, rad)
     local circleX, _ = circle.body:getPosition()
     if circle.isScored == false then
-        if in_left_rect(circleX, rad) then 
+        if in_left_rect(circleX, rad, W) then 
             if (is_same_colour(circle, left_rectangle)) then 
                 score = score + 2
                 bubbleWinSound:play() -- Play the sound when scoring
@@ -451,7 +451,7 @@ function score_circle(circle, rad)
                 score = score - 5
             end
             circle.isScored = true
-        elseif in_right_rect(circleX, rad) then 
+        elseif in_right_rect(circleX, rad, W) then 
             if (is_same_colour(circle, right_rectangle)) then 
                 score = score + 2
                 bubbleWinSound:play() -- Play the sound when scoring
