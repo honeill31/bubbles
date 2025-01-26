@@ -231,12 +231,16 @@ end
     end 
     left_rectangle.colour = round_control[rnd_idx].left_rect
     right_rectangle.colour = round_control[rnd_idx].right_rect
-    world:setGravity(0, round_control[rnd_idx].gravity)
 
     if (current_stage == 2) then 
         timer = timer - dt
         if (is_round_over(timer)) then 
             current_round = current_round + 1
+            local grav = current_round
+            if current_round > 3 then 
+                grav = 3
+            end
+            world:setGravity(0, round_control[grav].gravity)
             if (current_round > 3) then 
                 current_stage = 3
                 return
