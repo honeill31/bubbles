@@ -187,6 +187,31 @@ local function spawnCircle(x, y)
         end
     end
 
+
+
+    -- Function to destroy circles belonging to the previous round
+function destroyOldCircles(prev_round)
+    local prev_round_colours = round_control[prev_round]
+
+    -- Iterate backward to safely remove circles
+    for i = #circles, 1, -1 do
+        local circle = circles[i]
+        local colour = circle.colour
+
+        -- Check if the circle belongs to the previous round
+        if colour == prev_round_colours.left_rect or
+           colour == prev_round_colours.right_rect or
+           colour == prev_round_colours.b_1 or
+           colour == prev_round_colours.b_2 or
+           colour == prev_round_colours.b_3 then
+
+            -- Destroy the circle
+            circle.body:destroy()
+            table.remove(circles, i)
+        end
+    end
+end
+
     
 
     -- Add the new circle to the circles table
@@ -256,6 +281,37 @@ end
     if (current_stage == 2) then 
         timer = timer - dt
         if (is_round_over(timer)) then 
+
+ -- Save the previous round index
+ local previous_round = current_round
+
+ -- Increment the round
+ current_round = current_round + 1
+
+ -- Destroy circles from the previous round
+ if previous_round <= #round_control then
+     destroyOldCircles(previous_round)
+ end
+
+ -- Update gravity for the new round
+ local grav = current_round
+ if current_round > 3 then 
+     grav = 3
+ end
+ world:setGravity(0, round_control[grav].gravity)
+
+ -- Check if the game should move to the score screen
+ if (current_round > 3) then 
+     current_stage = 3
+     love.graphics.setFont(end_font)
+     return
+ end
+
+ -- Reset the timer
+ timer = timer_begin
+
+
+
             current_round = current_round + 1
             local grav = current_round
             if current_round > 3 then 
@@ -466,7 +522,7 @@ function love.draw()
         local textHeight = font:getHeight(score_string)
 
         -- Calculate the centered position
-        local x = (screenWidth - textWidth) / 2
+        local x = (screenWidth - textWidth) / 2.37
         local y = (screenHeight - textHeight) / 2
 
         -- Set color with custom RGB and opacity
