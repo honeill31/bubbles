@@ -137,14 +137,14 @@ function love.load()
 -- Load "PickUp" sounds
 pickUpSounds = {}
 for i = 1, 4 do
-    pickUpSounds[i] = love.audio.newSource(string.format("sounds/PickUp_%d.wav", i), "static")
+    pickUpSounds[i] = love.audio.newSource(string.format("sounds/PickUp_%d.wav", i), "stream")
 end
 
 
 -- load pop sounds
     bubblePopSounds = {}
     for i = 1, 10 do
-        bubblePopSounds[i] = love.audio.newSource(string.format("sounds/pop%d.wav", i), "static")
+        bubblePopSounds[i] = love.audio.newSource(string.format("sounds/pop%d.wav", i), "stream")
     end
 
 end
