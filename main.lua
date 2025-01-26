@@ -333,7 +333,7 @@ function love.update(dt)
     
             -- Destroy circle if it goes below the bottom of the window, or if wrong scored
             _, height, _ = love.window.getMode()
-            if (circleY > height) or circle.isScored then
+            if (circleY > height) then
                 table.insert(toRemove, i)
                 goto continue
             end
