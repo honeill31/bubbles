@@ -147,6 +147,8 @@ for i = 1, 4 do
     pickUpSounds[i] = love.audio.newSource(string.format("sounds/PickUp_%d.wav", i), "stream")
 end
 
+bubbleWinSound = love.audio.newSource("sounds/Bubble_Win.wav", "static") -- Use "static" for short sound effects
+
 
 -- load pop sounds
     bubblePopSounds = {}
@@ -443,6 +445,7 @@ function score_circle(circle, rad)
         if in_left_rect(circleX, rad) then 
             if (is_same_colour(circle, left_rectangle)) then 
                 score = score + 2
+                bubbleWinSound:play() -- Play the sound when scoring
             else 
                 score = score - 5
             end
@@ -450,6 +453,7 @@ function score_circle(circle, rad)
         elseif in_right_rect(circleX, rad) then 
             if (is_same_colour(circle, right_rectangle)) then 
                 score = score + 2
+                bubbleWinSound:play() -- Play the sound when scoring
                 circle.isScored = true
             else 
                 score = score - 5
