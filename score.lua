@@ -7,15 +7,15 @@ function add_score(sc, to_add)
     return sc + to_add
 end
 
-function in_left_rect(circleX)
+function in_left_rect(circleX, rad)
     width, _, _ = love.window.getMode()
-    return (circleX < left_rectangle.x + left_rectangle.width)
+    return (circleX < left_rectangle.x + left_rectangle.width + rad)
 end
 
 
-function in_right_rect(circleX)
+function in_right_rect(circleX, rad)
     width, _, _ = love.window.getMode()
-    return (circleX > width-right_rectangle.width)
+    return (circleX > width - right_rectangle.width - rad)
 end
 
 function is_same_colour(circle, rect)

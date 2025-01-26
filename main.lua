@@ -229,17 +229,6 @@ end
     })
 end
 
-function should_delete(circle)
-    -- Is this circle the right colour for this round?
-    local round_info = round_control[current_round]
-    should = circle.colour ~= round_info.left_rect and 
-    circle.colour ~= round_info.right_rect and
-    circle.colour ~= round_info.b_1 and 
-    circle.colour ~= round_info.b_2 and 
-    circle.colour ~= round_info.b_3
-    return should
-end
-
 -- LOVE UPDATE --
 love.frame = 0
 function love.update(dt)
@@ -340,11 +329,11 @@ function love.update(dt)
             local circleX, circleY = circle.body:getPosition()
 
             -- Try to score any circles
-            score_circle(circle)
+            score_circle(circle, circleRadius)
     
-            -- Destroy circle if it goes below the bottom of the window, or if wrong colour
+            -- Destroy circle if it goes below the bottom of the window, or if wrong scored
             _, height, _ = love.window.getMode()
-            if (circleY > height) or (should_delete(circle) or circle.isScored) then
+            if (circleY > height) or circle.isScored then
                 table.insert(toRemove, i)
                 goto continue
             end
@@ -448,17 +437,17 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 
-function score_circle(circle)
+function score_circle(circle, rad)
     local circleX, _ = circle.body:getPosition()
     if circle.isScored == false then
-        if in_left_rect(circleX) then 
+        if in_left_rect(circleX, rad) then 
             if (is_same_colour(circle, left_rectangle)) then 
                 score = score + 2
             else 
                 score = score - 5
             end
             circle.isScored = true
-        elseif in_right_rect(circleX) then 
+        elseif in_right_rect(circleX, rad) then 
             if (is_same_colour(circle, right_rectangle)) then 
                 score = score + 2
                 circle.isScored = true
