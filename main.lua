@@ -323,6 +323,15 @@ function love.update(dt)
             -- Reset collision flag
             circle.colliding = false
     
+            -- -- Collision checks for rectangles
+            -- if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
+            --     circle.colliding = true -- Mark circle as colliding
+            -- end
+    
+            -- if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
+            --     circle.colliding = true -- Mark circle as colliding
+            -- end
+    
         end
     
     -- COLLISIONS END
@@ -486,7 +495,7 @@ function love.draw()
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         love.graphics.print(restart_text_part2, start_x + part1_width + font:getWidth(" "), y)
 
-        -- love.graphics.print(love.report or "Please wait...")
+        --love.graphics.print(love.report or "Please wait...")
     end
     
 
@@ -526,7 +535,7 @@ function love.draw()
         love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
         love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
 
-        --love.graphics.print(love.report or "Please wait...")
+        love.graphics.print(love.report or "Please wait...")
 
 
         -- Draw each circle
@@ -540,23 +549,23 @@ function love.draw()
 
     if current_stage == 2 then
        -- Draw the loading bar background
-    love.graphics.setColor(
-        loadingBar.backgroundColor[1], 
-        loadingBar.backgroundColor[2], 
-        loadingBar.backgroundColor[3], 
-        loadingBar.backgroundColor[4] * loadingBar.alpha
-    )
-    love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
+    -- love.graphics.setColor(
+    --     loadingBar.backgroundColor[1], 
+    --     loadingBar.backgroundColor[2], 
+    --     loadingBar.backgroundColor[3], 
+    --     loadingBar.backgroundColor[4] * loadingBar.alpha
+    -- )
+    -- love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
 
-    -- Draw the loading bar fill (loading part)
-    local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
-    love.graphics.setColor(
-        loadingBar.color[1], 
-        loadingBar.color[2], 
-        loadingBar.color[3], 
-        loadingBar.color[4] * loadingBar.alpha
-    )
-    love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
+    -- -- Draw the loading bar fill (loading part)
+    -- local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
+    -- love.graphics.setColor(
+    --     loadingBar.color[1], 
+    --     loadingBar.color[2], 
+    --     loadingBar.color[3], 
+    --     loadingBar.color[4] * loadingBar.alpha
+    -- )
+    -- love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
     end
 end
 
