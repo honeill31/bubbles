@@ -11,6 +11,7 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
+local backgroundMusic
 
 local score_font = love.graphics.newFont(325)
 local end_font = love.graphics.newFont(32)
@@ -132,9 +133,11 @@ function love.load()
     love.profiler = require('profile') 
     love.profiler.start()
 
+     -- Load the background music
+     backgroundMusic = love.audio.newSource("sounds/Bubbles.wav", "stream") -- Use "stream" for long audio files
+     backgroundMusic:setLooping(true) -- Loop the music
+     backgroundMusic:setVolume(0.5) -- Adjust volume (0.0 to 1.0)
 
-
--- load the sounds
 
 
 -- Load "PickUp" sounds
@@ -214,6 +217,15 @@ end
 -- LOVE UPDATE --
 love.frame = 0
 function love.update(dt)
+
+
+   -- Play background music only during the game stage (current_stage == 2)
+   if current_stage == 2 and not backgroundMusic:isPlaying() then
+    backgroundMusic:play() -- Start or resume the music
+elseif current_stage ~= 2 and backgroundMusic:isPlaying() then
+    backgroundMusic:stop() -- Stop the music in other stages
+end
+
 
     love.frame = love.frame + 1
     if love.frame%200 == 0 then
