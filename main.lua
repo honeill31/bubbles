@@ -243,15 +243,12 @@ end
 -- LOVE UPDATE --
 love.frame = 0
 function love.update(dt)
-
-
    -- Play background music only during the game stage (current_stage == 2)
    if current_stage == 2 and not backgroundMusic:isPlaying() then
-    backgroundMusic:play() -- Start or resume the music
-elseif current_stage ~= 2 and backgroundMusic:isPlaying() then
-    backgroundMusic:stop() -- Stop the music in other stages
-end
-
+        backgroundMusic:play() -- Start or resume the music
+    elseif current_stage ~= 2 and backgroundMusic:isPlaying() then
+        backgroundMusic:stop() -- Stop the music in other stages
+    end
 
     love.frame = love.frame + 1
     if love.frame%200 == 0 then
@@ -283,41 +280,36 @@ end
         timer = timer - dt
         if (is_round_over(timer)) then 
 
- -- Save the previous round index
- local previous_round = current_round
+            -- Save the previous round index
+            local previous_round = current_round
+            -- Increment the round
+            current_round = current_round + 1
 
- -- Increment the round
- current_round = current_round + 1
+            -- Destroy circles from the previous round
+            if previous_round <= #round_control then
+                destroyOldCircles(previous_round)
+            end
 
- -- Destroy circles from the previous round
- if previous_round <= #round_control then
-     destroyOldCircles(previous_round)
- end
+            -- Update gravity for the new round
+            local grav = current_round
+            if current_round > 3 then 
+                grav = 3
+            end
+            world:setGravity(0, round_control[grav].gravity)
 
- -- Update gravity for the new round
- local grav = current_round
- if current_round > 3 then 
-     grav = 3
- end
- world:setGravity(0, round_control[grav].gravity)
-
- -- Check if the game should move to the score screen
- if (current_round > 3) then 
-     current_stage = 3
-     love.graphics.setFont(end_font)
-     return
- end
-
- -- Reset the timer
- timer = timer_begin
-
-
+            -- Check if the game should move to the score screen
+            if (current_round > 3) then 
+                current_stage = 3
+                love.graphics.setFont(end_font)
+                return
+            end
 
             current_round = current_round + 1
             local grav = current_round
             if current_round > 3 then 
                 grav = 3
             end
+
             world:setGravity(0, round_control[grav].gravity)
             if (current_round > 3) then 
                 current_stage = 3
@@ -327,7 +319,6 @@ end
                 end
                 love.graphics.setFont(end_font)
                 return
-                --love.event.quit()
             end
             timer = timer_begin
         end
@@ -353,7 +344,7 @@ end
     
             -- Destroy circle if it goes below the bottom of the window, or if wrong colour
             _, height, _ = love.window.getMode()
-            if (circleY > height) or (should_delete(circle)) then
+            if (circleY > height) or (should_delete(circle) or circle.isScored) then
                 table.insert(toRemove, i)
                 goto continue
             end
@@ -486,7 +477,6 @@ function love.mousereleased(x, y, button, istouch, presses)
                 if circle.dragging then
                     circle.dragging = false
                     circle.body:setType("dynamic") -- Re-enable physics
-                    score_circle(circle)
                 end
             end
         end
