@@ -323,15 +323,6 @@ function love.update(dt)
             -- Reset collision flag
             circle.colliding = false
     
-            -- Collision checks for rectangles
-            if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
-                circle.colliding = true -- Mark circle as colliding
-            end
-    
-            if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
-                circle.colliding = true -- Mark circle as colliding
-            end
-    
         end
     
     -- COLLISIONS END
