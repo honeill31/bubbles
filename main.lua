@@ -11,7 +11,7 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
-local high_score = 0
+local high_score = 0 -- store the high score
 local backgroundMusic
 
 local score_font = love.graphics.newFont(325)
@@ -259,6 +259,11 @@ function love.update(dt)
         score = 0
     end
 
+    -- check high score
+    if (score > high_score) then 
+        high_score = score
+    end
+
     -- Update the left/right rectangle colours
     local rnd_idx = current_round
     if (rnd_idx > 3) then 
@@ -304,10 +309,6 @@ function love.update(dt)
             world:setGravity(0, round_control[grav].gravity)
             if (current_round > 3) then 
                 current_stage = 3
-                -- check high score
-                if (score > high_score) then 
-                    high_score = score
-                end
                 love.graphics.setFont(end_font)
                 return
             end
