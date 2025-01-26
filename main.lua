@@ -15,7 +15,7 @@ local high_score = 0
 local backgroundMusic
 
 local score_font = love.graphics.newFont(325)
-local end_font = love.graphics.newFont(32)
+local end_font = love.graphics.newFont(25)
 
 
 
@@ -77,8 +77,8 @@ round_control[2] = round_2_colours
 round_control[3] = round_3_colours
 
 -- Timer
-timer = 20.0
-timer_begin = 20.0
+timer = 20
+timer_begin = 20
 
 local W = love.graphics.getWidth()
 local H = love.graphics.getHeight()
@@ -606,6 +606,14 @@ function love.draw()
         love.graphics.print(restart_text_part2, W / 2 + 5, H / 2 + 90)
 
         --love.graphics.print(love.report or "Please wait...")
+
+-- Draw the credits text
+local credits_text = "by Holly, Maggie and Mia \n for GGJ 2025"
+love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+local credits_x = W / 7 - font:getWidth(credits_text) / 2
+local credits_y = H / 17 -- Position near the bottom
+love.graphics.printf(credits_text, credits_x, credits_y, W, "center")
+
     end
 end
 
