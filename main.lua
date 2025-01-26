@@ -216,6 +216,11 @@ world:update(dt)
 local timeLeftPercent = timer / timer_begin
 loadingBar.currentWidth = loadingBar.width * timeLeftPercent
 
+-- normalise score
+if (score < 0) then 
+    score = 0
+end
+
     -- Update the physics world
     world:update(dt)
 
@@ -255,6 +260,9 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
         for i = #circles, 1, -1 do -- Iterate backward to allow safe removal
             local circle = circles[i]
             local circleX, circleY = circle.body:getPosition()
+
+            -- Try to score any circles
+            score_circle(circle)
     
             -- Destroy circle if it goes below the bottom of the window, or if wrong colour
             _, height, _ = love.window.getMode()
@@ -404,6 +412,7 @@ break
         end
     end
     if (current_stage == 3) then 
+        -- Reset round variable
         current_stage = 2
         current_round = 1
         score = 0
@@ -412,6 +421,28 @@ break
 end
 
 
+function score_circle(circle)
+    local circleX, _ = circle.body:getPosition()
+    if circle.isScored == false then
+        if in_left_rect(circleX) then 
+            if (is_same_colour(circle, left_rectangle)) then 
+                score = score + 2
+            else 
+                score = score - 5
+            end
+            circle.isScored = true
+        elseif in_right_rect(circleX) then 
+            if (is_same_colour(circle, right_rectangle)) then 
+                score = score + 2
+                circle.isScored = true
+            else 
+                score = score - 5
+            end
+            circle.isScored = true
+        end
+    end
+end
+
 function love.mousereleased(x, y, button, istouch, presses)
     if (current_stage == 2) then 
         if button == 1 then
@@ -419,24 +450,7 @@ function love.mousereleased(x, y, button, istouch, presses)
                 if circle.dragging then
                     circle.dragging = false
                     circle.body:setType("dynamic") -- Re-enable physics
-                    local circleX, _ = circle.body:getPosition()
-                    if circle.isScored == false then
-                        if in_left_rect(circleX) then 
-                            if (is_same_colour(circle, left_rectangle)) then 
-                                score = score + 2
-                                circle.isScored = true
-                            else 
-                                score = score - 5
-                            end
-                        elseif in_right_rect(circleX) then 
-                            if (is_same_colour(circle, right_rectangle)) then 
-                                score = score + 2
-                                circle.isScored = true
-                            else 
-                                score = score - 5
-                            end
-                        end
-                    end
+                    score_circle(circle)
                 end
             end
         end
