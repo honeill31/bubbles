@@ -130,6 +130,15 @@ function love.load()
 
 -- load the sounds
 
+
+-- Load "PickUp" sounds
+pickUpSounds = {}
+for i = 1, 4 do
+    pickUpSounds[i] = love.audio.newSource(string.format("sounds/PickUp_%d.wav", i), "static")
+end
+
+
+-- load pop sounds
     bubblePopSounds = {}
     for i = 1, 10 do
         bubblePopSounds[i] = love.audio.newSource(string.format("sounds/pop%d.wav", i), "static")
@@ -207,7 +216,6 @@ world:update(dt)
 local timeLeftPercent = timer / timer_begin
 loadingBar.currentWidth = loadingBar.width * timeLeftPercent
 
-
     -- Update the physics world
     world:update(dt)
 
@@ -254,34 +262,34 @@ loadingBar.currentWidth = loadingBar.width * timeLeftPercent
                 table.insert(toRemove, i)
                 goto continue
             end
+-- REMOVING THIS CAUSE IT FEELS LIKE A BUG NOW
+        -- -- Check for collisions between pop-able bubbles and held balls
+        -- if circle.canPop then -- Only for pop-able bubbles
+        --     for _, otherCircle in ipairs(circles) do
+        --         if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
+        --             local otherX, otherY = otherCircle.body:getPosition()
 
-        -- Check for collisions between pop-able bubbles and held balls
-        if circle.canPop then -- Only for pop-able bubbles
-            for _, otherCircle in ipairs(circles) do
-                if not otherCircle.canPop and otherCircle.dragging then -- Check if a ball is being held
-                    local otherX, otherY = otherCircle.body:getPosition()
+        --             -- Calculate the distance between the bubble and the held ball
+        --             local dx = circleX - otherX
+        --             local dy = circleY - otherY
+        --             local distance = math.sqrt(dx * dx + dy * dy)
 
-                    -- Calculate the distance between the bubble and the held ball
-                    local dx = circleX - otherX
-                    local dy = circleY - otherY
-                    local distance = math.sqrt(dx * dx + dy * dy)
-
-                    -- If the distance is less than the sum of their radii, pop the bubble
-                    if distance <= circleRadius * 2 then
-                        -- Play a random pop sound
-                        local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
-                        randomSound:play()
+        --             -- If the distance is less than the sum of their radii, pop the bubble
+        --             if distance <= circleRadius * 2 then
+        --                 -- Play a random pop sound
+        --                 local randomSound = bubblePopSounds[love.math.random(#bubblePopSounds)]
+        --                 randomSound:play()
                        
                 
-                        -- Mark the pop-able bubble for removal
-                        table.insert(toRemove, i)
-                        break -- No need to check further; the bubble will pop
-                    end
-                end
-            end
+        --                 -- Mark the pop-able bubble for removal
+        --                 table.insert(toRemove, i)
+        --                 break -- No need to check further; the bubble will pop
+        --             end
+        --         end
+        --     end
     
-            ::continue::
-        end
+        --     ::continue::
+        -- end
     
         -- Remove all marked circles
         for _, i in ipairs(toRemove) do
@@ -382,10 +390,14 @@ function love.mousepressed(x, y, button, istouch, presses)
                         table.remove(circles, i)
                         return -- Stop processing further since a circle was popped
                     else
-                        -- If not pop-able, start dragging
-                        circle.dragging = true
-                        circle.body:setType("kinematic") -- Temporarily disable physics
-                        break
+                      -- If not pop-able, start dragging
+circle.dragging = true
+circle.body:setType("kinematic") -- Temporarily disable physics
+
+-- Play a random "PickUp" sound
+local randomPickUpSound = pickUpSounds[love.math.random(#pickUpSounds)]
+randomPickUpSound:play()
+break
                     end
                 end
             end
@@ -469,17 +481,41 @@ function love.draw()
         local col = round_control[3].b_1
         local col2 = round_control[3].b_2
         love.graphics.setColor(get_colour(col.red), get_colour(col.green), get_colour(col.blue), get_colour(col.alpha))
-        love.graphics.rectangle("fill", W()/2-font:getWidth(restart_text)/2, H()/1.5, font:getWidth(restart_text) + 10, H()/8)
-        love.graphics.setColor(get_colour(col2.red), get_colour(col2.green), get_colour(col2.blue), get_colour(col2.alpha))
+        -- love.graphics.rectangle("fill", W()/2-font:getWidth(restart_text)/2, H()/1.5, font:getWidth(restart_text) + 10, H()/8)
+        -- love.graphics.setColor(get_colour(col2.red), get_colour(col2.green), get_colour(col2.blue), get_colour(col2.alpha))
         love.graphics.print(restart_text, W()/2 - font:getWidth(restart_text)/2 + 5, H()/1.4)
     end
 
     if (current_stage == 2) then 
-        -- Draw the score in the top left corner
-        local score_string = string.format("%d", score)
-        font = love.graphics.newFont(25)
-        love.graphics.setFont(font)
-        love.graphics.print(score_string, left_rectangle.x + 390, 20)
+-- Draw the score in the center of the screen
+local score_string = string.format("%d", score)
+font = love.graphics.newFont(325)
+love.graphics.setFont(font)
+
+-- Get the screen dimensions
+local screenWidth = love.graphics.getWidth()
+local screenHeight = love.graphics.getHeight()
+
+-- Measure the text dimensions
+local textWidth = font:getWidth(score_string)
+local textHeight = font:getHeight()
+
+-- Calculate the centered position
+local x = (screenWidth - textWidth) / 2
+local y = (screenHeight - textHeight) / 2
+
+-- Set color with custom RGB and opacity
+love.graphics.setColor(219 / 255, 207 / 255, 206 / 255, .3) -- Full opacity
+
+-- Draw the text at the centered position
+love.graphics.print(score_string, x, y)
+
+-- Reset the color to avoid affecting other drawings
+love.graphics.setColor(1, 1, 1, 1) -- Back to full white
+font = love.graphics.newFont(20)
+love.graphics.setFont(font)
+
+
 
 
         -- Draw the rectangles using the color values
