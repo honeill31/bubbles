@@ -12,6 +12,8 @@ local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
 
+local score_font = love.graphics.newFont(325)
+
 
 
 local loadingBar = {
@@ -209,14 +211,14 @@ function should_delete(circle)
 end
 
 -- LOVE UPDATE --
---love.frame = 0
+love.frame = 0
 function love.update(dt)
 
-    -- love.frame = love.frame + 1
-    -- if love.frame%100 == 0 then
-    --   love.report = love.profiler.report(20)
-    --   love.profiler.reset()
-    -- end
+    love.frame = love.frame + 1
+    if love.frame%200 == 0 then
+      love.report = love.profiler.report(20)
+      love.profiler.reset()
+    end
 
     -- Update the physics world
     world:update(dt)
@@ -307,18 +309,6 @@ function love.update(dt)
                 goto continue
             end
     
-            -- Reset collision flag
-            circle.colliding = false
-    
-            -- -- Collision checks for rectangles
-            -- if checkCircleRectCollision(circleX, circleY, circleRadius, left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height) then
-            --     circle.colliding = true -- Mark circle as colliding
-            -- end
-    
-            -- if checkCircleRectCollision(circleX, circleY, circleRadius, right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height) then
-            --     circle.colliding = true -- Mark circle as colliding
-            -- end
-    
         end
     
     -- COLLISIONS END
@@ -343,8 +333,7 @@ function love.mousepressed(x, y, button, istouch, presses)
 
     if (current_stage == 1) then 
         current_stage = 2
-        font = love.graphics.newFont(32)
-        love.graphics.setFont(font)
+        love.graphics.setFont(score_font)
     end
 
     if (current_stage == 2) then 
@@ -489,8 +478,6 @@ function love.draw()
     if (current_stage == 2) then 
         -- Draw the score in the center of the screen
         local score_string = string.format("%d", score)
-        font = love.graphics.newFont(325)
-        love.graphics.setFont(font)
 
         -- Get the screen dimensions
         local screenWidth = love.graphics.getWidth()
@@ -512,8 +499,6 @@ function love.draw()
 
         -- Reset the color to avoid affecting other drawings
         love.graphics.setColor(1, 1, 1, 1) -- Back to full white
-        font = love.graphics.newFont(20)
-        love.graphics.setFont(font)
 
 
         -- Draw the rectangles using the color values
