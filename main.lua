@@ -464,27 +464,42 @@ function love.draw()
 
     end
 
-    if (current_stage == 3) then 
+    if (current_stage == 3) then
+        -- Draw the left and right rectangle backgrounds
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
-        love.graphics.rectangle("fill", 0, 0, W()/2, H())
+        love.graphics.rectangle("fill", 0, 0, W() / 2, H())
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.rectangle("fill", W()/2, 0, W()/2, H())
-
+        love.graphics.rectangle("fill", W() / 2, 0, W() / 2, H())
+    
+        -- Draw the "score" text
         local score_string = "score"
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.print(score_string, W()/2-font:getWidth(score_string)- 5, H()/2)
+        love.graphics.print(score_string, W() / 2 - font:getWidth(score_string) - 5, H() / 2)
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         local num_string = tostring(score)
-        love.graphics.print(num_string, W()/2 + 5, H()/2)
-
-        local restart_text = "click/tap to restart"
-        local col = round_control[3].b_1
+        love.graphics.print(num_string, W() / 2 + 5, H() / 2)
+    
+        -- Draw the restart text
+        local restart_text_part1 = "click/tap" -- First part of the text
+        local restart_text_part2 = "to restart" -- Second part of the text
+        local col1 = round_control[3].b_1
         local col2 = round_control[3].b_2
-        love.graphics.setColor(get_colour(col.red), get_colour(col.green), get_colour(col.blue), get_colour(col.alpha))
-        -- love.graphics.rectangle("fill", W()/2-font:getWidth(restart_text)/2, H()/1.5, font:getWidth(restart_text) + 10, H()/8)
-        -- love.graphics.setColor(get_colour(col2.red), get_colour(col2.green), get_colour(col2.blue), get_colour(col2.alpha))
-        love.graphics.print(restart_text, W()/2 - font:getWidth(restart_text)/2 + 5, H()/1.4)
+    
+        -- Measure widths of the parts to calculate their positions
+        local part1_width = font:getWidth(restart_text_part1)
+        local total_width = font:getWidth(restart_text_part1 .. " " .. restart_text_part2)
+        local start_x = W() / 2 - total_width / 2 -- Centered start position
+        local y = H() / 1.4 -- Y position for the text
+    
+        -- Draw the first part
+        love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+        love.graphics.print(restart_text_part1, start_x, y)
+    
+        -- Draw the second part, slightly offset to the right
+        love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
+        love.graphics.print(restart_text_part2, start_x + part1_width + font:getWidth(" "), y)
     end
+    
 
     if (current_stage == 2) then 
 -- Draw the score in the center of the screen
