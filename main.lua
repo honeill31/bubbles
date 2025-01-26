@@ -126,6 +126,9 @@ function love.load()
 
     love.graphics.setFont(font)
 
+    love.profiler = require('profile') 
+    love.profiler.start()
+
 
 
 -- load the sounds
@@ -206,20 +209,26 @@ function should_delete(circle)
 end
 
 -- LOVE UPDATE --
-
+love.frame = 0
 function love.update(dt)
 
--- Update the physics world
-world:update(dt)
+    love.frame = love.frame + 1
+    if love.frame%100 == 0 then
+      love.report = love.profiler.report(20)
+      love.profiler.reset()
+    end
 
--- Calculate the current width of the loading bar
-local timeLeftPercent = timer / timer_begin
-loadingBar.currentWidth = loadingBar.width * timeLeftPercent
+    -- Update the physics world
+    world:update(dt)
 
--- normalise score
-if (score < 0) then 
-    score = 0
-end
+    -- Calculate the current width of the loading bar
+    local timeLeftPercent = timer / timer_begin
+    loadingBar.currentWidth = loadingBar.width * timeLeftPercent
+
+    -- normalise score
+    if (score < 0) then 
+        score = 0
+    end
 
     -- Update the left/right rectangle colours
     local rnd_idx = current_round
@@ -263,7 +272,7 @@ end
             local circleX, circleY = circle.body:getPosition()
 
             -- Try to score any circles
-            score_circle(circle)
+            --score_circle(circle)
     
             -- Destroy circle if it goes below the bottom of the window, or if wrong colour
             _, height, _ = love.window.getMode()
@@ -485,39 +494,39 @@ function love.draw()
         -- Draw the second part, slightly offset to the right
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         love.graphics.print(restart_text_part2, start_x + part1_width + font:getWidth(" "), y)
+
+        -- love.graphics.print(love.report or "Please wait...")
     end
     
 
     if (current_stage == 2) then 
--- Draw the score in the center of the screen
-local score_string = string.format("%d", score)
-font = love.graphics.newFont(325)
-love.graphics.setFont(font)
+        -- Draw the score in the center of the screen
+        local score_string = string.format("%d", score)
+        font = love.graphics.newFont(325)
+        love.graphics.setFont(font)
 
--- Get the screen dimensions
-local screenWidth = love.graphics.getWidth()
-local screenHeight = love.graphics.getHeight()
+        -- Get the screen dimensions
+        local screenWidth = love.graphics.getWidth()
+        local screenHeight = love.graphics.getHeight()
 
--- Measure the text dimensions
-local textWidth = font:getWidth(score_string)
-local textHeight = font:getHeight()
+        -- Measure the text dimensions
+        local textWidth = font:getWidth(score_string)
+        local textHeight = font:getHeight()
 
--- Calculate the centered position
-local x = (screenWidth - textWidth) / 2
-local y = (screenHeight - textHeight) / 2
+        -- Calculate the centered position
+        local x = (screenWidth - textWidth) / 2
+        local y = (screenHeight - textHeight) / 2
 
--- Set color with custom RGB and opacity
-love.graphics.setColor(219 / 255, 207 / 255, 206 / 255, .3) -- Full opacity
+        -- Set color with custom RGB and opacity
+        love.graphics.setColor(219 / 255, 207 / 255, 206 / 255, .3) -- Full opacity
 
--- Draw the text at the centered position
-love.graphics.print(score_string, x, y)
+        -- Draw the text at the centered position
+        love.graphics.print(score_string, x, y)
 
--- Reset the color to avoid affecting other drawings
-love.graphics.setColor(1, 1, 1, 1) -- Back to full white
-font = love.graphics.newFont(20)
-love.graphics.setFont(font)
-
-
+        -- Reset the color to avoid affecting other drawings
+        love.graphics.setColor(1, 1, 1, 1) -- Back to full white
+        font = love.graphics.newFont(20)
+        love.graphics.setFont(font)
 
 
         -- Draw the rectangles using the color values
@@ -525,6 +534,8 @@ love.graphics.setFont(font)
         love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
         love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
         love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
+
+        --love.graphics.print(love.report or "Please wait...")
 
 
         -- Draw each circle
