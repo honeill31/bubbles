@@ -11,6 +11,7 @@ local circles = {} -- Table to store all circles
 local spawnTimer = 0 -- Timer for spawning new circles
 local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
+local high_score = 0
 
 local score_font = love.graphics.newFont(325)
 local end_font = love.graphics.newFont(32)
@@ -252,6 +253,10 @@ function love.update(dt)
             world:setGravity(0, round_control[grav].gravity)
             if (current_round > 3) then 
                 current_stage = 3
+                -- check high score
+                if (score > high_score) then 
+                    high_score = score
+                end
                 love.graphics.setFont(end_font)
                 return
                 --love.event.quit()
@@ -514,10 +519,19 @@ function love.draw()
         -- Draw the "score" text
         local score_string = "score"
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.print(score_string, W / 2 - font:getWidth(score_string) - 5, H / 2)
+        love.graphics.print(score_string, W / 2 - (font:getWidth(score_string)), H / 2)
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
         local num_string = tostring(score)
         love.graphics.print(num_string, W / 2 + 5, H / 2)
+
+
+        -- draw the high score text
+        local high_score_string = "high score"
+        love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
+        love.graphics.print(high_score_string, W / 2 - (font:getWidth(high_score_string) - 55), H / 2 + 30)
+        love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
+        local high_num_string = tostring(high_score)
+        love.graphics.print(high_num_string, W / 2 + 5, H / 2 + 30)
     
         -- Draw the restart text
         local restart_text_part1 = "click/tap" -- First part of the text
@@ -525,19 +539,13 @@ function love.draw()
         local col1 = round_control[3].b_1
         local col2 = round_control[3].b_2
     
-        -- Measure widths of the parts to calculate their positions
-        local part1_width = font:getWidth(restart_text_part1)
-        local total_width = font:getWidth(restart_text_part1 .. " " .. restart_text_part2)
-        local start_x = W / 2 - total_width / 2 -- Centered start position
-        local y = H / 1.4 -- Y position for the text
-    
         -- Draw the first part
         love.graphics.setColor(get_colour(right_rectangle.colour.red), get_colour(right_rectangle.colour.green), get_colour(right_rectangle.colour.blue), get_colour(right_rectangle.colour.alpha))
-        love.graphics.print(restart_text_part1, start_x, y)
+        love.graphics.print(restart_text_part1, W / 2 - (font:getWidth(high_score_string) - 110), H / 2 + 90)
     
         -- Draw the second part, slightly offset to the right
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
-        love.graphics.print(restart_text_part2, start_x + part1_width + font:getWidth(" "), y)
+        love.graphics.print(restart_text_part2, W / 2 + 5, H / 2 + 90)
 
         --love.graphics.print(love.report or "Please wait...")
     end
