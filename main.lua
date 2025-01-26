@@ -13,6 +13,7 @@ local circleRadius = 50 -- Size of the circle
 local score = 0 -- To store the score
 
 local score_font = love.graphics.newFont(325)
+local end_font = love.graphics.newFont(32)
 
 
 
@@ -251,6 +252,7 @@ function love.update(dt)
             world:setGravity(0, round_control[grav].gravity)
             if (current_round > 3) then 
                 current_stage = 3
+                love.graphics.setFont(end_font)
                 return
                 --love.event.quit()
             end
@@ -357,24 +359,27 @@ function love.mousepressed(x, y, button, istouch, presses)
                         return -- Stop processing further since a circle was popped
                     else
                       -- If not pop-able, start dragging
-circle.dragging = true
-circle.body:setType("kinematic") -- Temporarily disable physics
+                        circle.dragging = true
+                        circle.body:setType("kinematic") -- Temporarily disable physics
 
--- Play a random "PickUp" sound
-local randomPickUpSound = pickUpSounds[love.math.random(#pickUpSounds)]
-randomPickUpSound:play()
-break
+                        -- Play a random "PickUp" sound
+                        local randomPickUpSound = pickUpSounds[love.math.random(#pickUpSounds)]
+                        randomPickUpSound:play()
+                        break
                     end
                 end
             end
         end
     end
     if (current_stage == 3) then 
+        if (y > (H/5 * 4)) then 
         -- Reset round variable
         current_stage = 2
         current_round = 1
+        love.graphics.setFont(score_font)
         score = 0
         timer = timer_begin
+        end
     end
 end
 
@@ -436,6 +441,69 @@ function love.draw()
 
     end
 
+    if (current_stage == 2) then 
+        -- Draw the score in the center of the screen
+        local score_string = string.format("%d", score)
+
+        -- Get the screen dimensions
+        local screenWidth = W
+        local screenHeight = H
+
+        -- Measure the text dimensions
+        local textWidth = font:getWidth(score_string)
+        local textHeight = font:getHeight(score_string)
+
+        -- Calculate the centered position
+        local x = (screenWidth - textWidth) / 2
+        local y = (screenHeight - textHeight) / 2
+
+        -- Set color with custom RGB and opacity
+        love.graphics.setColor(219 / 255, 207 / 255, 206 / 255, .3) -- Full opacity
+
+        -- Draw the text at the centered position
+        love.graphics.print(score_string, x-textWidth*2, y-textHeight*2)
+
+        -- Reset the color to avoid affecting other drawings
+        love.graphics.setColor(1, 1, 1, 1) -- Back to full white
+
+
+        -- Draw the rectangles using the color values
+        love.graphics.setColor(get_colour(round_control[current_round].left_rect.red), get_colour(round_control[current_round].left_rect.green), get_colour(round_control[current_round].left_rect.blue), get_colour(round_control[current_round].left_rect.alpha))
+        love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
+        love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
+        love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
+
+        --love.graphics.print(love.report or "Please wait...")
+
+
+        -- Draw each circle
+        for _, circle in ipairs(circles) do
+            local x, y = circle.body:getPosition()
+            love.graphics.setColor(get_colour(circle.colour.red), get_colour(circle.colour.green), get_colour(circle.colour.blue), get_colour(circle.colour.alpha))
+            love.graphics.circle("fill", x, y, circleRadius)
+
+        end
+
+        -- Draw the loading bar background
+        love.graphics.setColor(
+        loadingBar.backgroundColor[1], 
+        loadingBar.backgroundColor[2], 
+        loadingBar.backgroundColor[3], 
+        loadingBar.backgroundColor[4] * loadingBar.alpha
+        )
+        love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
+
+        -- Draw the loading bar fill (loading part)
+        local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
+        love.graphics.setColor(
+        loadingBar.color[1], 
+        loadingBar.color[2], 
+        loadingBar.color[3], 
+        loadingBar.color[4] * loadingBar.alpha
+        )
+        love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
+    end
+
     if (current_stage == 3) then
         -- Draw the left and right rectangle backgrounds
         love.graphics.setColor(get_colour(left_rectangle.colour.red), get_colour(left_rectangle.colour.green), get_colour(left_rectangle.colour.blue), get_colour(left_rectangle.colour.alpha))
@@ -472,72 +540,6 @@ function love.draw()
         love.graphics.print(restart_text_part2, start_x + part1_width + font:getWidth(" "), y)
 
         --love.graphics.print(love.report or "Please wait...")
-    end
-    
-
-    if (current_stage == 2) then 
-        -- Draw the score in the center of the screen
-        local score_string = string.format("%d", score)
-
-        -- Get the screen dimensions
-        local screenWidth = love.graphics.getWidth()
-        local screenHeight = love.graphics.getHeight()
-
-        -- Measure the text dimensions
-        local textWidth = font:getWidth(score_string)
-        local textHeight = font:getHeight()
-
-        -- Calculate the centered position
-        local x = (screenWidth - textWidth) / 2
-        local y = (screenHeight - textHeight) / 2
-
-        -- Set color with custom RGB and opacity
-        love.graphics.setColor(219 / 255, 207 / 255, 206 / 255, .3) -- Full opacity
-
-        -- Draw the text at the centered position
-        love.graphics.print(score_string, x, y)
-
-        -- Reset the color to avoid affecting other drawings
-        love.graphics.setColor(1, 1, 1, 1) -- Back to full white
-
-
-        -- Draw the rectangles using the color values
-        love.graphics.setColor(get_colour(round_control[current_round].left_rect.red), get_colour(round_control[current_round].left_rect.green), get_colour(round_control[current_round].left_rect.blue), get_colour(round_control[current_round].left_rect.alpha))
-        love.graphics.rectangle("fill", left_rectangle.x, left_rectangle.y, left_rectangle.width, left_rectangle.height)
-        love.graphics.setColor(get_colour(round_control[current_round].right_rect.red), get_colour(round_control[current_round].right_rect.green), get_colour(round_control[current_round].right_rect.blue), get_colour(round_control[current_round].right_rect.alpha))
-        love.graphics.rectangle("fill", right_rectangle.x, right_rectangle.y, right_rectangle.width, right_rectangle.height)
-
-        --love.graphics.print(love.report or "Please wait...")
-
-
-        -- Draw each circle
-        for _, circle in ipairs(circles) do
-            local x, y = circle.body:getPosition()
-            love.graphics.setColor(get_colour(circle.colour.red), get_colour(circle.colour.green), get_colour(circle.colour.blue), get_colour(circle.colour.alpha))
-            love.graphics.circle("fill", x, y, circleRadius)
-
-        end
-    end
-
-    if current_stage == 2 then
-       -- Draw the loading bar background
-        love.graphics.setColor(
-            loadingBar.backgroundColor[1], 
-            loadingBar.backgroundColor[2], 
-            loadingBar.backgroundColor[3], 
-            loadingBar.backgroundColor[4] * loadingBar.alpha
-        )
-        love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingBar.width, loadingBar.height)
-
-        -- Draw the loading bar fill (loading part)
-        local loadingWidth = loadingBar.width * (timer / timer_begin) -- Calculate width based on timer
-        love.graphics.setColor(
-            loadingBar.color[1], 
-            loadingBar.color[2], 
-            loadingBar.color[3], 
-            loadingBar.color[4] * loadingBar.alpha
-        )
-        love.graphics.rectangle("fill", loadingBar.x, loadingBar.y, loadingWidth, loadingBar.height)
     end
 end
 
